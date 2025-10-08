@@ -10,6 +10,9 @@ public class Pedido {
     // Asociación con Articulo
     private Articulo articulo;
 
+    //Asosiación con Cliente
+    private Cliente cliente;
+
     public int getNumPedido() {
         return numPedido;
     }
@@ -42,10 +45,27 @@ public class Pedido {
         this.articulo = articulo;
     }
 
+    public Cliente getCliente() {return cliente;}
+
+    public void setCliente(Cliente cliente) {this.cliente = cliente;}
+
     // Método para calcular el precio total del pedido
     public double calcularPrecio() {
         if (articulo == null) return 0;
         return (articulo.getPrecio() * cantidad) + articulo.getGastosEnvio();
+    }
+
+    //Metodo para calcular precio con descuento
+    //Metodo calcularPrecioTotal
+    public double calcularPrecioTotal(){
+        double subtotal = cantidad * articulo.getPrecio();
+        double gastos = articulo.getGastosEnvio();
+
+        //Aplicar descuento si cliente Premium
+        double descuento = cliente.calcularDescuento();
+        gastos = gastos * (1 - descuento);
+
+        return subtotal + gastos;
     }
 
     // Un pedido no puede cancelarse si ya ha pasado el tiempo de preparación
@@ -53,5 +73,15 @@ public class Pedido {
         if (articulo == null || fechaHora == null) return false;
         LocalDateTime limite = fechaHora.plusDays(articulo.getTiempoPrep());
         return LocalDateTime.now().isBefore(limite);
+    }
+
+    @Override
+    public String toString() {
+        return "Pedido{" +
+                "numeroPedido='" + numPedido + '\'' +
+                ", cantidad='" + cantidad + '\'' +
+                ", cliente='" + cliente + '\'' +
+                ", articulo=" + articulo +
+                '}';
     }
 }

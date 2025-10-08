@@ -1,10 +1,14 @@
 package uoc.medt;
 
 public class ClientePremium extends Cliente {
-    private float cuota;
-    private float descuento;
+    private double cuota = 30.0;
+    private double descuento = 0.2;
 
-    public float getCuota() {
+    public ClientePremium(String nombre, String domicilio, String nif, String email) {
+        super(nombre, domicilio, nif, email);
+    }
+
+    public double getCuota() {
         return cuota;
     }
 
@@ -12,11 +16,16 @@ public class ClientePremium extends Cliente {
         this.cuota = cuota;
     }
 
-    public float getDescuento() {
+    public double getDescuento() {
         return descuento;
     }
 
     public void setDescuento(float descuento) {
         this.descuento = descuento;
+    }
+
+    @Override
+    public double calcularDescuento(){
+        return descuento;
     }
 }

@@ -3,11 +3,19 @@ package uoc.medt;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Cliente {
+public abstract class Cliente {
     private String nombre;
     private String domicilio;
     private String nif;
     private String email;
+
+    //Constructor
+    public Cliente(String nombre, String domicilio, String nif, String email){
+        this.nombre = nombre;
+        this.domicilio = domicilio;
+        this.nif = nif;
+        this.email = email;
+    }
 
     // Asociación con Pedido (composición)
     private List<Pedido> pedidos = new ArrayList<>();
@@ -52,5 +60,20 @@ public class Cliente {
     // Método para agregar pedidos (composición)
     public void addPedido(Pedido pedido) {
         pedidos.add(pedido);
+    }
+
+    //Metodo abstracto
+    public double calcularDescuento() {
+        return 0;
+    }
+
+    @Override
+    public String toString() {
+        return "Cliente{" +
+                "nombre='" + nombre + '\'' +
+                ", domicilo='" + domicilio + '\'' +
+                ", nif='" + nif + '\'' +
+                ", email=" + email +
+                '}';
     }
 }

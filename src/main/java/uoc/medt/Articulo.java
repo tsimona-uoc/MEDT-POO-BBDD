@@ -7,6 +7,14 @@ public class Articulo {
     private double gastosEnvio;
     private int tiempoPrep;
 
+    public Articulo(String codigo, String descripcion, double precio, double gastosEnvio, int tiempoPrep){
+        this.codigo = codigo;
+        this.descripcion = descripcion;
+        this.precio = precio;
+        this.gastosEnvio = gastosEnvio;
+        this.tiempoPrep = tiempoPrep;
+    }
+
     public String getCodigo() {
         return codigo;
     }
@@ -45,5 +53,16 @@ public class Articulo {
 
     public void setTiempoPrep(int tiempoPrep) {
         this.tiempoPrep = tiempoPrep;
+    }
+
+
+    @Override
+    public String toString() {
+        return "Articulo{" +
+                "código='" + codigo + '\'' +
+                ", descripción='" + descripcion + '\'' +
+                ", precio='" + precio + '\'' +
+                ", gastos de envío=" + gastosEnvio +
+                '}';
     }
 }
