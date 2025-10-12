@@ -11,5 +11,4 @@ public class ClienteEstandar extends Cliente {
     public double calcularDescuento(){
         return 0.0;
     }
-    /// EMPTY
 }

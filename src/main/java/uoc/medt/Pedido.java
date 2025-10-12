@@ -49,15 +49,8 @@ public class Pedido {
 
     public void setCliente(Cliente cliente) {this.cliente = cliente;}
 
-    // Método para calcular el precio total del pedido
+    // Metodo para calcular el precio total del pedido
     public double calcularPrecio() {
-        if (articulo == null) return 0;
-        return (articulo.getPrecio() * cantidad) + articulo.getGastosEnvio();
-    }
-
-    //Metodo para calcular precio con descuento
-    //Metodo calcularPrecioTotal
-    public double calcularPrecioTotal(){
         double subtotal = cantidad * articulo.getPrecio();
         double gastos = articulo.getGastosEnvio();
 

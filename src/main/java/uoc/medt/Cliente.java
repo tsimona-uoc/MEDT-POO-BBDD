@@ -9,16 +9,16 @@ public abstract class Cliente {
     private String nif;
     private String email;
 
+    // Asociación con Pedido (composición)
+    private List<Pedido> pedidos = new ArrayList<>();
+
     //Constructor
-    public Cliente(String nombre, String domicilio, String nif, String email){
+    public Cliente(String nombre, String domicilio, String nif, String email) {
         this.nombre = nombre;
         this.domicilio = domicilio;
         this.nif = nif;
         this.email = email;
     }
-
-    // Asociación con Pedido (composición)
-    private List<Pedido> pedidos = new ArrayList<>();
 
     // Getters y Setters
     public String getNombre() {
@@ -63,9 +63,7 @@ public abstract class Cliente {
     }
 
     //Metodo abstracto
-    public double calcularDescuento() {
-        return 0;
-    }
+    public abstract double calcularDescuento();
 
     @Override
     public String toString() {
