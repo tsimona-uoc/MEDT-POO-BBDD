@@ -49,8 +49,9 @@ public class Pedido {
 
     public void setCliente(Cliente cliente) {this.cliente = cliente;}
 
+
     // Metodo para calcular el precio total del pedido
-    public double calcularPrecio() {
+    public double calcularPrecioTotal(){
         double subtotal = cantidad * articulo.getPrecio();
         double gastos = articulo.getGastosEnvio();
 
