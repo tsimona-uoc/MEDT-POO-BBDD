@@ -1,4 +1,4 @@
-package uoc.medt;
+package MEDT.MEDT.modelo;
 
 public class Articulo {
     private String codigo;
