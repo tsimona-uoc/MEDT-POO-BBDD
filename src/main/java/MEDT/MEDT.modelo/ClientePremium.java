@@ -1,4 +1,4 @@
-package uoc.medt;
+package MEDT.MEDT.modelo;
 
 public class ClientePremium extends Cliente {
     private double cuota = 30.0;

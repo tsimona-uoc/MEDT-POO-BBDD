@@ -1,4 +1,4 @@
-package uoc.medt;
+package MEDT.MEDT.modelo;
 
 import java.util.ArrayList;
 import java.util.List;
