@@ -62,7 +62,8 @@ public class Articulo {
                 "código='" + codigo + '\'' +
                 ", descripción='" + descripcion + '\'' +
                 ", precio='" + precio + '\'' +
-                ", gastos de envío=" + gastosEnvio +
+                ", gastos de envío=" + gastosEnvio + '\'' +
+                ", tiempo de preparación=" + tiempoPrep +
                 '}';
     }
 }

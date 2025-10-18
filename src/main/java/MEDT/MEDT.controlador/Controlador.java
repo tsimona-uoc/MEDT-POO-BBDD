@@ -3,6 +3,7 @@ package MEDT.MEDT.controlador;
 import MEDT.MEDT.modelo.*;
 
 import java.time.LocalDateTime;
+import java.util.Collection;
 import java.util.List;
 
 public class Controlador {
@@ -19,8 +20,8 @@ public class Controlador {
         datos.addArticulo(articulo);
     }
 
-    public List<Articulo> getArticulos() {
-        return (List<Articulo>) datos.getArticulos();
+    public Collection<Articulo> getArticulos() {
+        return datos.getArticulos();
     }
 
     // Gestión Clientes
@@ -32,15 +33,15 @@ public class Controlador {
         datos.addCliente(new ClientePremium(nombre, domicilio, nif, email));
     }
 
-    public List<Cliente> getClientes() {
-        return (List<Cliente>) datos.getClientes();
+    public Collection<Cliente> getClientes() {
+        return datos.getClientes();
     }
 
-    public List<ClienteEstandar> getClientesEstandar() {
+    public Collection<ClienteEstandar> getClientesEstandar() {
         return datos.getClientesEstandar();
     }
 
-    public List<ClientePremium> getClientesPremium() {
+    public Collection<ClientePremium> getClientesPremium() {
         return datos.getClientesPremium();
     }
 

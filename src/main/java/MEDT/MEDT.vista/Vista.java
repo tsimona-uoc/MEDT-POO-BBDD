@@ -37,7 +37,7 @@ public class Vista {
 
         switch (opcion) {
             case 1 -> {
-                System.out.print("Nombre: ");
+                System.out.print("Codigo: ");
                 String codigo = sc.nextLine();
                 System.out.print("Descripción: ");
                 String descripcion = sc.nextLine();
