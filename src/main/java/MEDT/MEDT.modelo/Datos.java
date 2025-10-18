@@ -1,8 +1,11 @@
 package MEDT.MEDT.modelo;
 
-import java.time.LocalDateTime;
+import MEDT.MEDT.modelo.excepciones.ArticuloNoEncontradoException;
+import MEDT.MEDT.modelo.excepciones.PedidoNoCancelableException;
+
 import java.util.*;
-import MEDT.MEDT.modelo.excepciones.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class Datos {
     // Usamos colecciones genéricas
@@ -40,12 +43,20 @@ public class Datos {
         return clientes.values();
     }
 
-    public List<ClienteEstandar> getClientesEstandar() {
-        return List.of();
+    public Collection<ClienteEstandar> getClientesEstandar() {
+        return clientes.values()
+                .stream()
+                .filter(cliente -> cliente instanceof ClienteEstandar)
+                .map(cliente -> (ClienteEstandar)cliente)
+                .collect(Collectors.toList());
     }
 
     public List<ClientePremium> getClientesPremium() {
-        return List.of();
+        return clientes.values()
+                .stream()
+                .filter(cliente -> cliente instanceof ClientePremium)
+                .map(cliente -> (ClientePremium)cliente)
+                .collect(Collectors.toList());
     }
 
     // ---- Gestión de pedidos ----
@@ -53,7 +64,6 @@ public class Datos {
         pedidos.add(pedido);
         pedido.getCliente().addPedido(pedido);
     }
-
 
     public List<Pedido> getPedidos() {
         return pedidos;
@@ -66,6 +76,4 @@ public class Datos {
         }
         pedidos.remove(pedido);
     }
-
-
 }
