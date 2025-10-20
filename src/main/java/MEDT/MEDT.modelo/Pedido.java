@@ -13,7 +13,7 @@ public class Pedido {
     //Asosiación con Cliente
     private Cliente cliente;
 
-    public Pedido (int numPedido, LocalDateTime fechaHora, int cantidad, Articulo articulo, Cliente cliente){
+    public Pedido (int numPedido, int cantidad, LocalDateTime fechaHora, Articulo articulo, Cliente cliente){
         this.numPedido = numPedido;
         this.fechaHora = fechaHora;
         this.cantidad = cantidad;
