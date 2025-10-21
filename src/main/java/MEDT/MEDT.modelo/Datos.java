@@ -7,34 +7,47 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public class Datos {
-    // Usamos colecciones genéricas
-    private Map<String, Articulo> articulos = new HashMap<>();
-    private Map<String, Cliente> clientes = new HashMap<>();
-    private Map<Integer, Pedido> pedidos = new HashMap<>();
 
-    // ---- Gestión de artículos ----
-    public void addArticulo(Articulo articulo) {
+    private final Map<String, Articulo> articulos = new HashMap<>();
+    private final Map<String, Cliente> clientes = new HashMap<>();
+    private final Map<Integer, Pedido> pedidos = new HashMap<>();
+
+    // ============================================================
+    // GESTIÓN DE ARTÍCULOS
+    // ============================================================
+
+    public boolean addArticulo(Articulo articulo) {
+        if (articulo == null || articulos.containsKey(articulo.getCodigo())) {
+            return false; // Evita duplicados
+        }
         articulos.put(articulo.getCodigo(), articulo);
+        return true;
     }
 
     public Articulo getArticulo(String codigo) throws ArticuloNoEncontradoException {
-        Articulo a = articulos.get(codigo);
-        if (a == null) {
-            throw new ArticuloNoEncontradoException("Artículo con código " + codigo + " no existe.");
+        Articulo art = articulos.get(codigo);
+        if (art == null) {
+            throw new ArticuloNoEncontradoException("El artículo con código " + codigo + " no existe.");
         }
-        return a;
+        return art;
     }
 
     public Collection<Articulo> getArticulos() {
         return articulos.values();
     }
 
-    // ---- Gestión de clientes ----
-    public void addCliente(Cliente cliente) {
+    // ============================================================
+    // GESTIÓN DE CLIENTES
+    // ============================================================
+
+    public boolean addCliente(Cliente cliente) {
+        if (cliente == null || clientes.containsKey(cliente.getNif())) {
+            return false; // Evita duplicados
+        }
         clientes.put(cliente.getNif(), cliente);
+        return true;
     }
 
     public Cliente getCliente(String nif) {
@@ -45,117 +58,79 @@ public class Datos {
         return clientes.values();
     }
 
-    public Collection<ClienteEstandar> getClientesEstandar() {
-        return clientes.values()
-                .stream()
-                .filter(cliente -> cliente instanceof ClienteEstandar)
-                .map(cliente -> (ClienteEstandar)cliente)
+    public List<Cliente> getClientesEstandar() {
+        return clientes.values().stream()
+                .filter(c -> c instanceof ClienteEstandar)
                 .collect(Collectors.toList());
     }
 
-    public List<ClientePremium> getClientesPremium() {
-        return clientes.values()
-                .stream()
-                .filter(cliente -> cliente instanceof ClientePremium)
-                .map(cliente -> (ClientePremium)cliente)
+    public List<Cliente> getClientesPremium() {
+        return clientes.values().stream()
+                .filter(c -> c instanceof ClientePremium)
                 .collect(Collectors.toList());
     }
 
-    // ---- Gestión de pedidos ----
-    public void addPedido(Pedido pedido) {
-        pedidos.put(pedido.getNumPedido(), pedido);
-    }
+    // ============================================================
+    // GESTIÓN DE PEDIDOS
+    // ============================================================
 
-//    public List<Pedido> getPedidos() {
-//        return pedidos;
-//    }
-
-    // Cancelar pedido con excepción personalizada
-    public void cancelarPedido(Pedido pedido) throws PedidoNoCancelableException {
-        if (!pedido.esCancelable()) {
-            throw new PedidoNoCancelableException("El pedido no puede cancelarse, ya pasó el tiempo de preparación.");
+    public boolean addPedido(Pedido pedido) {
+        if (pedido == null || pedidos.containsKey(pedido.getNumPedido())) {
+            return false;
         }
-        pedidos.remove(pedido);
+        pedidos.put(pedido.getNumPedido(), pedido);
+        return true;
     }
-    // Eva
-    public boolean buscarArticulo(String codigo_articulo){
-        return articulos.containsKey(codigo_articulo);
-    }
-    public boolean buscarCliente(String nif){
-        return clientes.containsKey(nif);
-    }
-    public void addClienteEstandar(String nombre, String domicilio, String nif, String email){
-        clientes.put(nif, new ClienteEstandar(nombre, domicilio, nif, email));
-    }
-    public void addClientePremium(String nombre, String domicilio, String nif, String email) {
-        clientes.put(nif, new ClientePremium(nombre, domicilio, nif, email));
-    }
-    public boolean buscarPedido(int numero_pedido){
-        return pedidos.containsKey(numero_pedido);
-    }
-    public boolean pedidoEliminable(int numero_pedido){
-        Pedido pedido = pedidos.get(numero_pedido);
-            if(pedido == null){
-                return false;
-            }
-                long diasTranscurridos = Duration.between(pedido.getFechaHora(), LocalDateTime.now()).toDays();
-                int tiempoPreparacion = pedido.getArticulo().getTiempoPrep();
 
-                return diasTranscurridos <= tiempoPreparacion;
+    public Pedido getPedido(int numPedido) {
+        return pedidos.get(numPedido);
     }
-    public boolean eliminarPedido(int numero_pedido){
-        if(pedidos.containsKey(numero_pedido)){
-            pedidos.remove(numero_pedido);
+
+    public boolean eliminarPedido(int numPedido) {
+        if (pedidos.containsKey(numPedido)) {
+            pedidos.remove(numPedido);
             return true;
         }
         return false;
     }
-    public List<Pedido> getPedidosPendientesCliente(String nif){
-        List<Pedido> pendientes = new ArrayList<>();
-        for (Pedido pedido : pedidos.values()){
-            long dias = Duration.between(pedido.getFechaHora(), LocalDateTime.now()).toDays();
-            int preparacion = pedido.getArticulo().getTiempoPrep();
 
-            if(dias <= preparacion && pedido.getCliente().getNif().equals(nif)){
-                pendientes.add(pedido);
-            }
+    public void cancelarPedido(Pedido pedido) throws PedidoNoCancelableException {
+        if (!pedido.esCancelable()) {
+            throw new PedidoNoCancelableException(
+                    "El pedido no puede cancelarse, ya pasó el tiempo de preparación."
+            );
         }
-        return pendientes;
+        pedidos.remove(pedido.getNumPedido());
     }
-    public List<Pedido> getPedidosPendientes(){
-        List<Pedido> pendientes = new ArrayList<>();
-        for (Pedido pedido : pedidos.values()){
-            long dias = Duration.between(pedido.getFechaHora(), LocalDateTime.now()).toDays();
-            int preparacion = pedido.getArticulo().getTiempoPrep();
 
-            if(dias <= preparacion){
-                pendientes.add(pedido);
-            }
-        }
-        return pendientes;
+
+    // ============================================================
+    // CONSULTAS DE PEDIDOS (pendientes / enviados)
+    // ============================================================
+
+    public List<Pedido> getPedidosPendientes() {
+        return pedidos.values().stream()
+                .filter(p -> Duration.between(p.getFechaHora(), LocalDateTime.now()).toMinutes()
+                        <= p.getArticulo().getTiempoPrep())
+                .collect(Collectors.toList());
     }
-    public List<Pedido> getPedidosEnviadosCliente(String nif){
-        List<Pedido> enviados = new ArrayList<>();
-        for (Pedido pedido : pedidos.values()){
-            long dias = Duration.between(pedido.getFechaHora(), LocalDateTime.now()).toDays();
-            int preparacion = pedido.getArticulo().getTiempoPrep();
 
-            if(dias > preparacion && pedido.getCliente().getNif().equals(nif)){
-                enviados.add(pedido);
-            }
-        }
-        return enviados;
+    public List<Pedido> getPedidosPendientesCliente(String nif) {
+        return getPedidosPendientes().stream()
+                .filter(p -> p.getCliente().getNif().equalsIgnoreCase(nif))
+                .collect(Collectors.toList());
     }
-    public List<Pedido> getPedidosEnviados(){
-        List<Pedido> enviados = new ArrayList<>();
-        for (Pedido pedido : pedidos.values()){
-            long dias = Duration.between(pedido.getFechaHora(), LocalDateTime.now()).toDays();
-            int preparacion = pedido.getArticulo().getTiempoPrep();
 
-            if(dias > preparacion){
-                enviados.add(pedido);
-            }
-        }
-        return enviados;
+    public List<Pedido> getPedidosEnviados() {
+        return pedidos.values().stream()
+                .filter(p -> Duration.between(p.getFechaHora(), LocalDateTime.now()).toMinutes()
+                        > p.getArticulo().getTiempoPrep())
+                .collect(Collectors.toList());
+    }
+
+    public List<Pedido> getPedidosEnviadosCliente(String nif) {
+        return getPedidosEnviados().stream()
+                .filter(p -> p.getCliente().getNif().equalsIgnoreCase(nif))
+                .collect(Collectors.toList());
     }
 }

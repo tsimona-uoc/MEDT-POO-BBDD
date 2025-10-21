@@ -57,10 +57,6 @@ public abstract class Cliente {
         return pedidos;
     }
 
-//    // Método para agregar pedidos (composición)
-//    public void addPedido(Pedido pedido) {
-//        pedidos.add(pedido);
-//    }
 
     //Metodo abstracto
     public abstract double calcularDescuento();

@@ -7,87 +7,106 @@ import MEDT.MEDT.modelo.ClientePremium;
 import MEDT.MEDT.modelo.Datos;
 import MEDT.MEDT.modelo.Pedido;
 import MEDT.MEDT.modelo.excepciones.ArticuloNoEncontradoException;
+import MEDT.MEDT.modelo.excepciones.PedidoNoCancelableException;
 
 import java.time.LocalDateTime;
-import java.util.Collection;
+import java.util.ArrayList;
 import java.util.List;
 
 public class Controlador {
 
-    private final Datos datos;
+    private final Datos datos = new Datos();
 
-    public Controlador() {
-        this.datos = new Datos();
-    }
-
-    // Gestión Artículos
-    public void addArticulo(String codigo, String descripcion, double precio, double gastosEnvio, int tiempoPrep) {
-        Articulo articulo = new Articulo(codigo, descripcion, precio, gastosEnvio, tiempoPrep);
-        datos.addArticulo(articulo);
-    }
-
-    public Collection<Articulo> getArticulos() {
-        return datos.getArticulos();
+    // =======================
+    //  ARTÍCULOS
+    // =======================
+    public boolean addArticulo(String codigo, String descripcion, double precio, double gastosEnvio, int tiempoPrep) {
+        try {
+            Articulo articulo = new Articulo(codigo, descripcion, precio, gastosEnvio, tiempoPrep);
+            return datos.addArticulo(articulo);
+        } catch (Exception e) {
+            return false;
+        }
     }
 
-    // Gestión Clientes
-
-
-    public Collection<Cliente> getClientes() {
-        return datos.getClientes();
+    public List<String> getArticulosStr() {
+        List<String> listaStr = new ArrayList<>();
+        for (Articulo art : datos.getArticulos()) {
+            listaStr.add(art.toString());
+        }
+        return listaStr;
     }
 
-    public Collection<ClienteEstandar> getClientesEstandar() {
-        return datos.getClientesEstandar();
+    // =======================
+    //  CLIENTES
+    // =======================
+    public boolean addClienteEstandar(String nombre, String domicilio, String nif, String email) {
+        ClienteEstandar cliente = new ClienteEstandar(nombre, domicilio, nif, email);
+        return datos.addCliente(cliente);
     }
 
-    public Collection<ClientePremium> getClientesPremium() {
-        return datos.getClientesPremium();
+    public boolean addClientePremium(String nombre, String domicilio, String nif, String email) {
+        ClientePremium cliente = new ClientePremium(nombre, domicilio, nif, email);
+        return datos.addCliente(cliente);
     }
 
-    // Gestión Pedidos Eva
-    public boolean buscarArticulo(String codigo_articulo){
-        return datos.buscarArticulo(codigo_articulo);
+    public List<String> getClientesStr() {
+        List<String> listaStr = new ArrayList<>();
+        for (Cliente c : datos.getClientes()) {
+            listaStr.add(c.toString());
+        }
+        return listaStr;
     }
-    public Articulo getArticulo(String codigo_articulo) throws ArticuloNoEncontradoException {
-        return datos.getArticulo(codigo_articulo);
+
+    // =======================
+    //  PEDIDOS
+    // =======================
+    public String addPedido(int numPedido, int cantidad, LocalDateTime fechaHora, String codigoArticulo, String nifCliente) {
+        try {
+            Articulo articulo = datos.getArticulo(codigoArticulo);
+            Cliente cliente = datos.getCliente(nifCliente);
+
+            if (articulo == null)
+                return "Error: el artículo no existe.";
+            if (cliente == null)
+                return "Error: el cliente no existe. Debe crearlo antes de continuar.";
+
+            Pedido pedido = new Pedido(numPedido, cantidad, fechaHora, articulo, cliente);
+            if (datos.addPedido(pedido)) {
+                return "Pedido añadido correctamente.";
+            } else {
+                return "Error: el pedido no se pudo añadir (posible duplicado).";
+            }
+        } catch (ArticuloNoEncontradoException e) {
+            return "Error: Artículo no encontrado." + e.getMessage();
+        } catch (Exception e) {
+            return "Error inesperado al añadir pedido: " + e.getMessage();
+        }
     }
-    public boolean buscarCliente(String nif){
-        return datos.buscarCliente(nif);
+
+    public boolean eliminarPedido(int numPedido) throws PedidoNoCancelableException {
+        Pedido pedido = datos.getPedido(numPedido);
+        if (pedido == null) {
+            throw new IllegalArgumentException("No existe ningún pedido con ese número.");
+        }
+        datos.cancelarPedido(pedido); // si no se puede cancelar, lanza la excepción
+        return false;
     }
-    public Cliente getCliente(String nif){
-        return datos.getCliente(nif);
+
+
+    public List<String> getPedidosPendientesStr() {
+        List<String> listaStr = new ArrayList<>();
+        for (Pedido p : datos.getPedidosPendientes()) {
+            listaStr.add(p.toString());
+        }
+        return listaStr;
     }
-    public void addPedido(int numPedido, int cantidad, LocalDateTime fechaHora, Articulo articulo, Cliente cliente){
-        Pedido nuevo = new Pedido(numPedido, cantidad, fechaHora, articulo, cliente);
-        datos.addPedido(nuevo);
-    }
-    public void addClienteEstandar(String nombre, String domicilio, String nif, String email) {
-        datos.addCliente(new ClienteEstandar(nombre, domicilio, nif, email));
-    }
-    public void addClientePremium(String nombre, String domicilio, String nif, String email) {
-        datos.addCliente(new ClientePremium(nombre, domicilio, nif, email));
-    }
-    public boolean buscarPedido(int numero_pedido){
-        return datos.buscarPedido(numero_pedido);
-    }
-    public boolean pedidoEliminable(int numero_pedido) {
-        return datos.pedidoEliminable(numero_pedido);
-    }
-    public boolean eliminarPedido(int numero_pedido){
-        return datos.eliminarPedido(numero_pedido);
-    }
-    public List<Pedido> getPedidosPendientesCliente(String nif){
-        return datos.getPedidosPendientesCliente(nif);
-    }
-    public List<Pedido> getPedidosPendientes(){
-        return datos.getPedidosPendientes();
-    }
-    public List<Pedido> getPedidosEnviadosCliente(String nif){
-        return datos.getPedidosEnviadosCliente(nif);
-    }
-    public List<Pedido> getPedidosEnviados(){
-        return datos.getPedidosEnviados();
+
+    public List<String> getPedidosEnviadosStr() {
+        List<String> listaStr = new ArrayList<>();
+        for (Pedido p : datos.getPedidosEnviados()) {
+            listaStr.add(p.toString());
+        }
+        return listaStr;
     }
 }
-
