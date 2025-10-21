@@ -39,6 +39,7 @@ public class Vista {
     }
 
     private void menuArticulos() {
+        System.out.println("--Gestor de Artículos--");
         System.out.println("1. Añadir Artículo");
         System.out.println("2. Mostrar Artículos");
         System.out.print("Elige opción: ");

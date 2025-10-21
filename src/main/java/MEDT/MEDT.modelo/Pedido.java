@@ -73,7 +73,7 @@ public class Pedido {
     // Un pedido no puede cancelarse si ya ha pasado el tiempo de preparación
     public boolean esCancelable() {
         if (articulo == null || fechaHora == null) return false;
-        LocalDateTime limite = fechaHora.plusDays(articulo.getTiempoPrep());
+        LocalDateTime limite = fechaHora.plusMinutes(articulo.getTiempoPrep());
         return LocalDateTime.now().isBefore(limite);
     }
 
