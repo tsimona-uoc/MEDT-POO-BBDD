@@ -56,10 +56,58 @@ public class Vista {
 
     private void menuClientes() {
         // similar a artículos (añadir, mostrar, etc.)
+        System.out.println("1. Añadir Clientes");
+        System.out.println("2. Mostrar Clientes");
+        System.out.println("3. Mostrar Clientes Estándar");
+        System.out.println("4. Mostrar Clientes Premium");
+        System.out.print("Elige opción: ");
+        int opcion = Integer.parseInt(sc.nextLine());
+
+        switch (opcion) {
+            case 1 -> {
+                System.out.print("Nombre: ");
+                String nombre = sc.nextLine();
+                System.out.print("Domicilio: ");
+                String domicilio = sc.nextLine();
+                System.out.print("NIF: ");
+                String nif = sc.nextLine();
+                System.out.print("Email: ");
+                String email = sc.nextLine();
+
+                // TENGO DUDAS
+                System.out.print("Tipo de cliente: (E)stándar / (P)remium");
+                String tipoCliente = sc.nextLine().trim().toUpperCase();
+
+                if (tipoCliente.equals("E")) {
+                    controlador.addClienteEstandar(nombre, domicilio, nif, email);
+                    System.out.println("Cliente Estándar añadido correctamente.");
+                } else if (tipoCliente.equals("P")) {
+                    controlador.addClientePremium(nombre, domicilio, nif, email);
+                    System.out.println("Cliente Premium añadido correctamente.");
+                } else {
+                    System.out.println("Tipo de cliente no válido. No se añadieron clientes. Repita el proceso.");
+                }
+            }
+            case 2 -> controlador. getClientes().forEach(System.out::println);
+            case 3 -> controlador. getClientesEstandar().forEach(System.out::println);
+            case 4 -> controlador. getClientesPremium().forEach(System.out::println);
+        }
     }
 
     private void menuPedidos() {
         // opciones 3.1 a 3.4 según enunciado
+        System.out.println("1. Añadir Pedido");
+        System.out.println("2. Eliminar Pedido");
+        System.out.println("3. Mostrar Pedidos pendientes de envío (con opción de filtrado por cliente)");
+        System.out.println("4. Mostrar Pedidos enviados (con opción de filtrado por cliente)");
+        System.out.print("Elige opción: ");
+        int opcion = Integer.parseInt(sc.nextLine());
+
+        switch (opcion) {
+            case 1 -> {
+
+                
     }
+
 }
 
