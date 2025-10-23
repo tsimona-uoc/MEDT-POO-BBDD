@@ -146,7 +146,7 @@ class ControladorPedidosTest {
         assertFalse(resultado, "El método debe devolver false según la implementación proporcionada.");
 
         // 4. Verificación de interacciones
-        // Verificamos que se llamó con el número de pedido CORRECCTO
+        // Verificamos que se llamó con el número de pedido CORRECTO
         verify(datos, times(1)).getPedido(NUM_PEDIDO);
         verify(datos, times(1)).cancelarPedido(pedido); // Verifica que se llamó a la cancelación
     }

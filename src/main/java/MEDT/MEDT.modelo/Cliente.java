@@ -9,7 +9,7 @@ public abstract class Cliente {
     private String nif;
     private String email;
 
-    // Asociación con Pedido (composición)
+    // Asociación con Pedido
     private List<Pedido> pedidos = new ArrayList<>();
 
     //Constructor
