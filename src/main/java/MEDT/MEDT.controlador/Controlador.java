@@ -15,7 +15,12 @@ import java.util.List;
 
 public class Controlador {
 
-    private final Datos datos = new Datos();
+    /// Datos
+    private Datos datos;
+
+    public Controlador(Datos datos) {
+        this.datos = datos;
+    }
 
     // =======================
     //  ARTÍCULOS
