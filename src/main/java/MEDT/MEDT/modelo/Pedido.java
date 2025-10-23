@@ -86,4 +86,10 @@ public class Pedido {
                 ", articulo=" + articulo +
                 '}';
     }
+
+    public boolean pedidoEnviado(LocalDateTime now) {
+        long minutosPreparacion = articulo.getTiempoPrep();
+        LocalDateTime fechaLimiteEnvio = this.fechaHora.plusMinutes(minutosPreparacion);
+        return now.isEqual(fechaLimiteEnvio) || now.isAfter(fechaLimiteEnvio);
+    }
 }
