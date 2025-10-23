@@ -1,6 +1,7 @@
 package MEDT.MEDT.vista;
 
 import MEDT.MEDT.controlador.Controlador;
+import MEDT.MEDT.modelo.Datos;
 import MEDT.MEDT.modelo.excepciones.PedidoNoCancelableException;
 
 import java.time.LocalDate;
@@ -11,7 +12,11 @@ import java.util.Scanner;
 
 public class Vista {
     private final Scanner sc = new Scanner(System.in);
-    private final Controlador controlador = new Controlador();
+    private final Controlador controlador;
+
+    public Vista(Controlador controlador) {
+        this.controlador = controlador;
+    }
 
     public void menu() {
         int opcion;
@@ -136,16 +141,15 @@ public class Vista {
         int numPedido = Integer.parseInt(sc.nextLine());
         System.out.print("Cantidad de unidades: ");
         int cantidad = Integer.parseInt(sc.nextLine());
-        System.out.print("Fecha del pedido (yyyy-MM-dd): ");
-        LocalDate fecha = LocalDate.parse(sc.nextLine(), DateTimeFormatter.ofPattern("yyyy-MM-dd"));
-        LocalDateTime fechaHora = fecha.atStartOfDay();
+        System.out.print("Fecha del pedido (yyyy-MM-dd HH:mm): ");
+        LocalDateTime fecha = LocalDateTime.parse(sc.nextLine(), DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
 
         System.out.print("Código del artículo: ");
         String codigoArticulo = sc.nextLine();
         System.out.print("NIF del cliente: ");
         String nif = sc.nextLine();
 
-        String resultado = controlador.addPedido(numPedido, cantidad, fechaHora, codigoArticulo, nif);
+        String resultado = controlador.addPedido(numPedido, cantidad, fecha, codigoArticulo, nif);
         System.out.println(resultado);
     }
 
@@ -162,7 +166,6 @@ public class Vista {
             System.out.println(e.getMessage());
         }
     }
-
 
     private void mostrarPedidosPendientes() {
         List<String> pedidos = controlador.getPedidosPendientesStr();
