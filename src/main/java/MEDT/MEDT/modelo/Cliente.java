@@ -9,7 +9,7 @@ public abstract class Cliente {
     private String nif;
     private String email;
 
-    // Asociación con Pedido (composición)
+    // Asociación con Pedido
     private List<Pedido> pedidos = new ArrayList<>();
 
     //Constructor
@@ -57,10 +57,6 @@ public abstract class Cliente {
         return pedidos;
     }
 
-    // Método para agregar pedidos (composición)
-    public void addPedido(Pedido pedido) {
-        pedidos.add(pedido);
-    }
 
     //Metodo abstracto
     public abstract double calcularDescuento();

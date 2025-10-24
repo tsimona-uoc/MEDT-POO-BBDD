@@ -13,7 +13,7 @@ public class Pedido {
     //Asosiación con Cliente
     private Cliente cliente;
 
-    public Pedido (int numPedido, LocalDateTime fechaHora, int cantidad, Articulo articulo, Cliente cliente){
+    public Pedido (int numPedido, int cantidad, LocalDateTime fechaHora, Articulo articulo, Cliente cliente){
         this.numPedido = numPedido;
         this.fechaHora = fechaHora;
         this.cantidad = cantidad;
@@ -73,7 +73,7 @@ public class Pedido {
     // Un pedido no puede cancelarse si ya ha pasado el tiempo de preparación
     public boolean esCancelable() {
         if (articulo == null || fechaHora == null) return false;
-        LocalDateTime limite = fechaHora.plusDays(articulo.getTiempoPrep());
+        LocalDateTime limite = fechaHora.plusMinutes(articulo.getTiempoPrep());
         return LocalDateTime.now().isBefore(limite);
     }
 
