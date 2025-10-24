@@ -6,6 +6,7 @@ import MEDT.MEDT.modelo.excepciones.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class Controlador {
 
@@ -49,6 +50,14 @@ public class Controlador {
         return datos.getClientes().stream().toList();
     }
 
+    public List<Cliente> getClientesEstandar() {
+        return datos.getClientesEstandar().stream().toList();
+    }
+
+    public List<Cliente> getClientesPremium() {
+        return datos.getClientesPremium().stream().toList();
+    }
+
     // =======================
     //  PEDIDOS
     // =======================
@@ -85,11 +94,27 @@ public class Controlador {
     }
 
 
-    public List<Pedido> getPedidosPendientes() {
-        return datos.getPedidosPendientes();
+    public List<Pedido> getPedidosPendientes(String nif) {
+        if (Objects.equals(nif, "")){
+            return datos.getPedidosPendientes();
+        }
+
+        return datos.getPedidosPendientes().stream().filter(x -> x.getCliente().getNif().equals(nif)).toList();
     }
 
-    public List<Pedido> getPedidosEnviados() {
-        return datos.getPedidosEnviados();
+    public List<Pedido> getPedidosEnviados(String nif) {
+        if (Objects.equals(nif, "")){
+            return datos.getPedidosEnviados();
+        }
+        return datos.getPedidosEnviados().stream().filter(x -> x.getCliente().getNif().equals(nif)).toList();
+    }
+
+    public boolean existeCliente(String nif){
+        try {
+            return datos.getCliente(nif) != null;
+        }
+        catch (Exception e) {
+            return false;
+        }
     }
 }

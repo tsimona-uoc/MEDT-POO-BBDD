@@ -101,13 +101,44 @@ public class Vista {
                 boolean ok = (tipo == 1)
                         ? controlador.addClienteEstandar(nombre, domicilio, nif, email)
                         : controlador.addClientePremium(nombre, domicilio, nif, email);
-
                 if (ok)
                     System.out.println("Cliente añadido correctamente.");
                 else
                     System.out.println("Error: el cliente ya existe o no se pudo añadir.");
             }
             case 2 -> {
+                this.subMenuClientes();
+            }
+            default -> System.out.println("Opción no válida.");
+        }
+    }
+
+    private void subMenuClientes() {
+        System.out.println("--Mostrar Clientes--");
+        System.out.println("1. Mostrar clientes estandar");
+        System.out.println("2. Mostrar clientes premium");
+        System.out.println("3. Mostrar todos los clientes");
+        System.out.print("Elige opción: ");
+        int opcion = Integer.parseInt(sc.nextLine());
+
+        switch (opcion) {
+            case 1 -> {
+                List<Cliente> clientes = controlador.getClientesEstandar();
+                if (clientes.isEmpty()) {
+                    System.out.println("No hay clientes estandar registrados.");
+                } else {
+                    clientes.forEach(System.out::println);
+                }
+            }
+            case 2 -> {
+                List<Cliente> clientes = controlador.getClientesPremium();
+                if (clientes.isEmpty()) {
+                    System.out.println("No hay clientes premium registrados.");
+                } else {
+                    clientes.forEach(System.out::println);
+                }
+            }
+            case 3 -> {
                 List<Cliente> clientes = controlador.getClientes();
                 if (clientes.isEmpty()) {
                     System.out.println("No hay clientes registrados.");
@@ -128,11 +159,23 @@ public class Vista {
         System.out.print("Elige opción: ");
         int opcion = Integer.parseInt(sc.nextLine());
 
+        String filtro = "";
+
+        if (opcion == 3 || opcion == 4){
+            String userOption = "";
+            System.out.println("Desea filtrar? S/N:");
+            userOption = sc.nextLine();
+            if (userOption.equals("S")){
+                System.out.println("Introduzca el DNI:");
+                filtro = sc.nextLine();
+            }
+        }
+
         switch (opcion) {
             case 1 -> addPedido();
             case 2 -> eliminarPedido();
-            case 3 -> mostrarPedidosPendientes();
-            case 4 -> mostrarPedidosEnviados();
+            case 3 -> mostrarPedidosPendientes(filtro);
+            case 4 -> mostrarPedidosEnviados(filtro);
             default -> System.out.println("Opción no válida.");
         }
     }
@@ -149,6 +192,32 @@ public class Vista {
         String codigoArticulo = sc.nextLine();
         System.out.print("NIF del cliente: ");
         String nif = sc.nextLine();
+
+        boolean existeCliente = controlador.existeCliente(nif);
+
+        if (!existeCliente){
+            System.out.println("El cliente no existe, debe darlo de alta primero.");
+
+            System.out.print("Nombre: ");
+            String nombre = sc.nextLine();
+            System.out.print("Domicilio: ");
+            String domicilio = sc.nextLine();
+            System.out.print("Email: ");
+            String email = sc.nextLine();
+            System.out.print("Tipo de cliente (1=Estandar, 2=Premium): ");
+            int tipo = Integer.parseInt(sc.nextLine());
+
+            boolean ok = (tipo == 1)
+                    ? controlador.addClienteEstandar(nombre, domicilio, nif, email)
+                    : controlador.addClientePremium(nombre, domicilio, nif, email);
+            if (ok){
+                System.out.println("Cliente añadido correctamente.");
+            }
+            else{
+                System.out.println("Error: No se ha podido registrar el cliente.");
+                return;
+            }
+        }
 
         String resultado = controlador.addPedido(numPedido, cantidad, fecha, codigoArticulo, nif);
         System.out.println(resultado);
@@ -168,14 +237,14 @@ public class Vista {
         }
     }
 
-    private void mostrarPedidosPendientes() {
-        List<Pedido> pedidos = controlador.getPedidosPendientes();
+    private void mostrarPedidosPendientes(String filtro) {
+        List<Pedido> pedidos = controlador.getPedidosPendientes(filtro);
         if (pedidos.isEmpty()) System.out.println("No hay pedidos pendientes.");
         else pedidos.forEach(System.out::println);
     }
 
-    private void mostrarPedidosEnviados() {
-        List<Pedido> pedidos = controlador.getPedidosEnviados();
+    private void mostrarPedidosEnviados(String filtro) {
+        List<Pedido> pedidos = controlador.getPedidosEnviados(filtro);
         if (pedidos.isEmpty()) System.out.println("No hay pedidos enviados.");
         else pedidos.forEach(System.out::println);
     }
