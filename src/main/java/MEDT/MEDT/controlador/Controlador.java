@@ -28,12 +28,8 @@ public class Controlador {
         }
     }
 
-    public List<String> getArticulosStr() {
-        List<String> listaStr = new ArrayList<>();
-        for (Articulo art : datos.getArticulos()) {
-            listaStr.add(art.toString());
-        }
-        return listaStr;
+    public List<Articulo> getArticulos() {
+        return datos.getArticulos().stream().toList();
     }
 
     // =======================
@@ -49,12 +45,8 @@ public class Controlador {
         return datos.addCliente(cliente);
     }
 
-    public List<String> getClientesStr() {
-        List<String> listaStr = new ArrayList<>();
-        for (Cliente c : datos.getClientes()) {
-            listaStr.add(c.toString());
-        }
-        return listaStr;
+    public List<Cliente> getClientes() {
+        return datos.getClientes().stream().toList();
     }
 
     // =======================
@@ -93,19 +85,11 @@ public class Controlador {
     }
 
 
-    public List<String> getPedidosPendientesStr() {
-        List<String> listaStr = new ArrayList<>();
-        for (Pedido p : datos.getPedidosPendientes()) {
-            listaStr.add(p.toString());
-        }
-        return listaStr;
+    public List<Pedido> getPedidosPendientes() {
+        return datos.getPedidosPendientes();
     }
 
-    public List<String> getPedidosEnviadosStr() {
-        List<String> listaStr = new ArrayList<>();
-        for (Pedido p : datos.getPedidosEnviados()) {
-            listaStr.add(p.toString());
-        }
-        return listaStr;
+    public List<Pedido> getPedidosEnviados() {
+        return datos.getPedidosEnviados();
     }
 }

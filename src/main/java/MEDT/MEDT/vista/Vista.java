@@ -1,6 +1,9 @@
 package MEDT.MEDT.vista;
 
 import MEDT.MEDT.controlador.Controlador;
+import MEDT.MEDT.modelo.Articulo;
+import MEDT.MEDT.modelo.Cliente;
+import MEDT.MEDT.modelo.Pedido;
 import MEDT.MEDT.modelo.excepciones.PedidoNoCancelableException;
 
 import java.time.LocalDateTime;
@@ -64,7 +67,7 @@ public class Vista {
                 }
             }
             case 2 -> {
-                List<String> articulos = controlador.getArticulosStr();
+                List<Articulo> articulos = controlador.getArticulos();
                 if (articulos.isEmpty()) {
                     System.out.println("No hay artículos registrados.");
                 } else {
@@ -105,7 +108,7 @@ public class Vista {
                     System.out.println("Error: el cliente ya existe o no se pudo añadir.");
             }
             case 2 -> {
-                List<String> clientes = controlador.getClientesStr();
+                List<Cliente> clientes = controlador.getClientes();
                 if (clientes.isEmpty()) {
                     System.out.println("No hay clientes registrados.");
                 } else {
@@ -166,13 +169,13 @@ public class Vista {
     }
 
     private void mostrarPedidosPendientes() {
-        List<String> pedidos = controlador.getPedidosPendientesStr();
+        List<Pedido> pedidos = controlador.getPedidosPendientes();
         if (pedidos.isEmpty()) System.out.println("No hay pedidos pendientes.");
         else pedidos.forEach(System.out::println);
     }
 
     private void mostrarPedidosEnviados() {
-        List<String> pedidos = controlador.getPedidosEnviadosStr();
+        List<Pedido> pedidos = controlador.getPedidosEnviados();
         if (pedidos.isEmpty()) System.out.println("No hay pedidos enviados.");
         else pedidos.forEach(System.out::println);
     }
