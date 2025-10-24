@@ -1,10 +1,8 @@
 package MEDT.MEDT.vista;
 
 import MEDT.MEDT.controlador.Controlador;
-import MEDT.MEDT.modelo.Datos;
 import MEDT.MEDT.modelo.excepciones.PedidoNoCancelableException;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;

@@ -1,5 +1,6 @@
-package MEDT.MEDT.controlador;
+package controlador;
 
+import MEDT.MEDT.controlador.Controlador;
 import MEDT.MEDT.modelo.Articulo;
 import MEDT.MEDT.modelo.Cliente;
 import MEDT.MEDT.modelo.Datos;
