@@ -1,4 +1,4 @@
-package controlador;
+package MEDT.MEDT.controlador;
 
 import MEDT.MEDT.controlador.Controlador;
 import MEDT.MEDT.modelo.Articulo;
