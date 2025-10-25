@@ -84,6 +84,7 @@ public class Pedido {
                 ", cantidad='" + cantidad + '\'' +
                 ", cliente='" + cliente + '\'' +
                 ", articulo=" + articulo +
+                ", precioTotal='" + this.calcularPrecioTotal() + '\'' +
                 '}';
     }
 }
