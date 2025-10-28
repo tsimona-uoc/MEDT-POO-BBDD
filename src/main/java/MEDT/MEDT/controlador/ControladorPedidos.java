@@ -1,61 +1,22 @@
 package MEDT.MEDT.controlador;
 
-import MEDT.MEDT.modelo.*;
-import MEDT.MEDT.modelo.excepciones.*;
+import MEDT.MEDT.modelo.Articulo;
+import MEDT.MEDT.modelo.Cliente;
+import MEDT.MEDT.modelo.Datos;
+import MEDT.MEDT.modelo.Pedido;
+import MEDT.MEDT.modelo.excepciones.ArticuloNoEncontradoException;
+import MEDT.MEDT.modelo.excepciones.PedidoNoCancelableException;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public class Controlador {
+public class ControladorPedidos {
 
-    /// Datos
     private Datos datos;
 
-    public Controlador(Datos datos) {
+    public ControladorPedidos(Datos datos){
         this.datos = datos;
-    }
-
-    // =======================
-    //  ARTÍCULOS
-    // =======================
-    public boolean addArticulo(String codigo, String descripcion, double precio, double gastosEnvio, int tiempoPrep) {
-        try {
-            Articulo articulo = new Articulo(codigo, descripcion, precio, gastosEnvio, tiempoPrep);
-            return datos.addArticulo(articulo);
-        } catch (Exception e) {
-            return false;
-        }
-    }
-
-    public List<Articulo> getArticulos() {
-        return datos.getArticulos().stream().toList();
-    }
-
-    // =======================
-    //  CLIENTES
-    // =======================
-    public boolean addClienteEstandar(String nombre, String domicilio, String nif, String email) {
-        ClienteEstandar cliente = new ClienteEstandar(nombre, domicilio, nif, email);
-        return datos.addCliente(cliente);
-    }
-
-    public boolean addClientePremium(String nombre, String domicilio, String nif, String email) {
-        ClientePremium cliente = new ClientePremium(nombre, domicilio, nif, email);
-        return datos.addCliente(cliente);
-    }
-
-    public List<Cliente> getClientes() {
-        return datos.getClientes().stream().toList();
-    }
-
-    public List<Cliente> getClientesEstandar() {
-        return datos.getClientesEstandar().stream().toList();
-    }
-
-    public List<Cliente> getClientesPremium() {
-        return datos.getClientesPremium().stream().toList();
     }
 
     // =======================
@@ -107,14 +68,5 @@ public class Controlador {
             return datos.getPedidosEnviados();
         }
         return datos.getPedidosEnviados().stream().filter(x -> x.getCliente().getNif().equals(nif)).toList();
-    }
-
-    public boolean existeCliente(String nif){
-        try {
-            return datos.getCliente(nif) != null;
-        }
-        catch (Exception e) {
-            return false;
-        }
     }
 }
