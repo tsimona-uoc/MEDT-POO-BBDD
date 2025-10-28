@@ -169,10 +169,10 @@ public class Vista {
 
         if (opcion == 3 || opcion == 4){
             String userOption = "";
-            System.out.println("Desea filtrar? S/N:");
+            System.out.print("Desea filtrar? S/N:");
             userOption = sc.nextLine();
             if (userOption.equals("S")){
-                System.out.println("Introduzca el DNI:");
+                System.out.print("Introduzca el DNI:");
                 filtro = sc.nextLine();
             }
         }
