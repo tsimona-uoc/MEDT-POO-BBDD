@@ -4,63 +4,16 @@ import MEDT.MEDT.modelo.*;
 import MEDT.MEDT.modelo.excepciones.*;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public class Controlador {
-
-    /// Datos
+public class ControladorPedidos {
     private Datos datos;
 
-    public Controlador(Datos datos) {
+    public ControladorPedidos(Datos datos){
         this.datos = datos;
     }
 
-    // =======================
-    //  ARTÍCULOS
-    // =======================
-    public boolean addArticulo(String codigo, String descripcion, double precio, double gastosEnvio, int tiempoPrep) {
-        try {
-            Articulo articulo = new Articulo(codigo, descripcion, precio, gastosEnvio, tiempoPrep);
-            return datos.addArticulo(articulo);
-        } catch (Exception e) {
-            return false;
-        }
-    }
-
-    public List<Articulo> getArticulos() {
-        return datos.getArticulos().stream().toList();
-    }
-
-    // =======================
-    //  CLIENTES
-    // =======================
-    public boolean addClienteEstandar(String nombre, String domicilio, String nif, String email) {
-        ClienteEstandar cliente = new ClienteEstandar(nombre, domicilio, nif, email);
-        return datos.addCliente(cliente);
-    }
-
-    public boolean addClientePremium(String nombre, String domicilio, String nif, String email) {
-        ClientePremium cliente = new ClientePremium(nombre, domicilio, nif, email);
-        return datos.addCliente(cliente);
-    }
-
-    public List<Cliente> getClientes() {
-        return datos.getClientes().stream().toList();
-    }
-
-    public List<Cliente> getClientesEstandar() {
-        return datos.getClientesEstandar().stream().toList();
-    }
-
-    public List<Cliente> getClientesPremium() {
-        return datos.getClientesPremium().stream().toList();
-    }
-
-    // =======================
-    //  PEDIDOS
-    // =======================
     public String addPedido(int numPedido, int cantidad, LocalDateTime fechaHora, String codigoArticulo, String nifCliente) {
         try {
             Articulo articulo = datos.getArticulo(codigoArticulo);

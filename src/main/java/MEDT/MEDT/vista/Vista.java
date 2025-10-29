@@ -1,6 +1,6 @@
 package MEDT.MEDT.vista;
 
-import MEDT.MEDT.controlador.Controlador;
+import MEDT.MEDT.controlador.ControladorPedidos;
 import MEDT.MEDT.modelo.Articulo;
 import MEDT.MEDT.modelo.Cliente;
 import MEDT.MEDT.modelo.Pedido;
@@ -13,9 +13,9 @@ import java.util.Scanner;
 
 public class Vista {
     private final Scanner sc = new Scanner(System.in);
-    private final Controlador controlador;
+    private final ControladorPedidos controlador;
 
-    public Vista(Controlador controlador) {
+    public Vista(ControladorPedidos controlador) {
         this.controlador = controlador;
     }
 
@@ -99,8 +99,8 @@ public class Vista {
                 int tipo = Integer.parseInt(sc.nextLine());
 
                 boolean ok = (tipo == 1)
-                        ? controlador.addClienteEstandar(nombre, domicilio, nif, email)
-                        : controlador.addClientePremium(nombre, domicilio, nif, email);
+                        ? cc.addClienteEstandar(nombre, domicilio, nif, email)
+                        : cc.addClientePremium(nombre, domicilio, nif, email);
                 if (ok)
                     System.out.println("Cliente añadido correctamente.");
                 else
@@ -193,7 +193,7 @@ public class Vista {
         System.out.print("NIF del cliente: ");
         String nif = sc.nextLine();
 
-        boolean existeCliente = controlador.existeCliente(nif);
+        boolean existeCliente = ControladorPedidos.existeCliente(nif);
 
         if (!existeCliente){
             System.out.println("El cliente no existe, debe darlo de alta primero.");

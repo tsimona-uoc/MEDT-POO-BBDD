@@ -1,6 +1,5 @@
 package MEDT.MEDT.controlador;
 
-import MEDT.MEDT.controlador.Controlador;
 import MEDT.MEDT.modelo.Articulo;
 import MEDT.MEDT.modelo.Cliente;
 import MEDT.MEDT.modelo.Datos;
@@ -31,7 +30,7 @@ class ControladorPedidosTest {
 
     // Inyecta el mock 'datos' en la instancia real de Controlador que vamos a probar
     @InjectMocks
-    private Controlador controlador;
+    private ControladorPedidos controlador;
 
     // Variables de prueba comunes
     private final int NUM_PEDIDO = 1;
@@ -46,7 +45,7 @@ class ControladorPedidosTest {
 
     @BeforeEach
     void setUp() {
-        controlador = new Controlador(datos);
+        controlador = new ControladorPedidos(datos);
         // Objetos de prueba usados para simular las respuestas del mock 'datos'
         articulo = new Articulo(CODIGO_ARTICULO, "Descripción", 10.0, 5.0, 60);
         cliente = new ClienteEstandar("Nombre", "Domicilio", NIF_CLIENTE, "email@test.com");

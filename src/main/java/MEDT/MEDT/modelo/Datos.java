@@ -18,13 +18,13 @@ public class Datos {
     // GESTIÓN DE ARTÍCULOS
     // ============================================================
 
-    public boolean addArticulo(Articulo articulo) {
-        if (articulo == null || articulos.containsKey(articulo.getCodigo())) {
-            return false; // Evita duplicados
-        }
-        articulos.put(articulo.getCodigo(), articulo);
-        return true;
-    }
+//    public boolean addArticulo(Articulo articulo) {
+//        if (articulo == null || articulos.containsKey(articulo.getCodigo())) {
+//            return false; // Evita duplicados
+//        }
+//        articulos.put(articulo.getCodigo(), articulo);
+//        return true;
+//    }
 
     public Articulo getArticulo(String codigo) throws ArticuloNoEncontradoException {
         Articulo art = articulos.get(codigo);
