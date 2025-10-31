@@ -34,9 +34,33 @@ public class ArticuloJDBC implements ArticuloDAO {
 
     @Override
     public Articulo buscarPorCodigo(String codigo) {
-        // Lo haremos más adelante
-        return null;
+        String sql = "SELECT * FROM articulo WHERE codigo = ?";
+
+        try (Connection con = ConnectionUtil.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+
+            ps.setString(1, codigo);
+
+            var rs = ps.executeQuery();
+
+            if (rs.next()) {
+                // Crear el objeto Articulo con los datos del registro
+                String descripcion = rs.getString("descripcion");
+                double precio = rs.getDouble("precio");
+                double gastosEnvio = rs.getDouble("gastosEnvio");
+                int tiempoPrep = rs.getInt("tiempoPrep");
+
+                return new Articulo(codigo, descripcion, precio, gastosEnvio, tiempoPrep);
+            } else {
+                return null; // no se encontró ningún artículo
+            }
+
+        } catch (SQLException e) {
+            System.out.println("Error al buscar artículo: " + e.getMessage());
+            return null;
+        }
     }
+
 
     @Override
     public java.util.List<Articulo> listarTodos() {

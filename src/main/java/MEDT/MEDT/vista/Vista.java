@@ -49,7 +49,8 @@ public class Vista {
     private void menuArticulos() {
         System.out.println("--Gestor de Artículos--");
         System.out.println("1. Añadir Artículo");
-        System.out.println("2. Mostrar Artículos");
+        System.out.println("2. Buscar Artículo por Código");
+        System.out.println("3. Mostrar Artículos");
         System.out.print("Elige opción: ");
         int opcion = Integer.parseInt(sc.nextLine());
 
@@ -73,6 +74,21 @@ public class Vista {
                 }
             }
             case 2 -> {
+                System.out.println("Código: ");
+                String codigo = sc.nextLine();
+                Articulo articulo = controladorArticulos.buscarPorCodigo(codigo);
+
+                if (articulo != null) {
+                    System.out.println("Artículo encontrado! " +
+                            "Descripción: " + articulo.getDescripcion() +
+                            ", Precio: " + articulo.getPrecio() +
+                            ", Gastos de envío: " + articulo.getGastosEnvio() +
+                            ", Tiempo de preparación: " + articulo.getTiempoPrep());
+                } else {
+                    System.out.println("No existe ningún artículo con ese código.");
+                }
+            }
+            case 3 -> {
                 List<Articulo> articulos = this.controladorArticulos.getArticulos();
                 if (articulos.isEmpty()) {
                     System.out.println("No hay artículos registrados.");

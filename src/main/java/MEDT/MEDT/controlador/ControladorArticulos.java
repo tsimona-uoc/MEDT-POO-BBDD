@@ -27,6 +27,10 @@ public class ControladorArticulos {
         }
     }
 
+    public Articulo buscarPorCodigo (String codigo) {
+        return  articuloDAO.buscarPorCodigo(codigo);
+    }
+
     public List<Articulo> getArticulos() {
         return articuloDAO.listarTodos().stream().toList();
     }
