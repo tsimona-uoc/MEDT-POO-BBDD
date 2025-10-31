@@ -89,7 +89,7 @@ public class Vista {
                 }
             }
             case 3 -> {
-                List<Articulo> articulos = this.controladorArticulos.getArticulos();
+                List<Articulo> articulos = this.controladorArticulos.listarTodos();
                 if (articulos.isEmpty()) {
                     System.out.println("No hay artículos registrados.");
                 } else {

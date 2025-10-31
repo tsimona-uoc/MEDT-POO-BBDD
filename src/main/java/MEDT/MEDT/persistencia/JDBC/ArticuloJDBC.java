@@ -7,6 +7,7 @@ import MEDT.MEDT.persistencia.DAO.ArticuloDAO;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import  java.util.List;
 
 public class ArticuloJDBC implements ArticuloDAO {
 
@@ -63,8 +64,31 @@ public class ArticuloJDBC implements ArticuloDAO {
 
 
     @Override
-    public java.util.List<Articulo> listarTodos() {
-        // Lo haremos más adelante
-        return null;
+    public List<Articulo> listarTodos() {
+        String sql = "SELECT * FROM articulo";
+        List<Articulo> articulos = new java.util.ArrayList<>();
+
+        try (Connection con = ConnectionUtil.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql);
+             var rs = ps.executeQuery()) {
+
+            while (rs.next()) {
+                String codigo = rs.getString("codigo");
+                String descripcion = rs.getString("descripcion");
+                double precio = rs.getDouble("precio");
+                double gastosEnvio = rs.getDouble("gastosEnvio");
+                int tiempoPrep = rs.getInt("tiempoPrep");
+
+                Articulo articulo = new Articulo(codigo, descripcion, precio, gastosEnvio, tiempoPrep);
+                articulos.add(articulo);
+            }
+
+        } catch (SQLException e) {
+            System.out.println("Error al listar artículos: " + e.getMessage());
+            return null;
+        }
+
+        return articulos;
     }
+
 }
