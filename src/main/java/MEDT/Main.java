@@ -9,7 +9,7 @@ import MEDT.MEDT.vista.Vista;
 public class Main {
     public static void main(String[] args) {
         Datos datos = new Datos();
-        ControladorArticulos ca = new ControladorArticulos(datos);
+        ControladorArticulos ca = new ControladorArticulos();
         ControladorPedidos cp = new ControladorPedidos(datos);
         ControladorClientes cc = new ControladorClientes(datos);
         new Vista(cp, ca, cc).menu();

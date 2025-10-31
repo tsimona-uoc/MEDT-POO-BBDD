@@ -1,16 +1,18 @@
 package MEDT.MEDT.controlador;
 
 import MEDT.MEDT.modelo.*;
+import MEDT.MEDT.persistencia.DAO.ArticuloDAO;
+import MEDT.MEDT.persistencia.JDBC.ArticuloJDBC;
 
 import java.util.List;
 
 public class ControladorArticulos {
 
-    /// Datos
-    private Datos datos;
+    ///Articulo DAO
+    private ArticuloDAO articuloDAO;
 
-    public ControladorArticulos(Datos datos) {
-        this.datos = datos;
+    public ControladorArticulos() {
+        this.articuloDAO = new ArticuloJDBC();
     }
 
     // =======================
@@ -19,13 +21,13 @@ public class ControladorArticulos {
     public boolean addArticulo(String codigo, String descripcion, double precio, double gastosEnvio, int tiempoPrep) {
         try {
             Articulo articulo = new Articulo(codigo, descripcion, precio, gastosEnvio, tiempoPrep);
-            return datos.addArticulo(articulo);
+            return articuloDAO.addArticulo(articulo);
         } catch (Exception e) {
             return false;
         }
     }
 
     public List<Articulo> getArticulos() {
-        return datos.getArticulos().stream().toList();
+        return articuloDAO.listarTodos().stream().toList();
     }
 }

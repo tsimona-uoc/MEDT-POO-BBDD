@@ -27,7 +27,7 @@ public class ArticuloJDBC implements ArticuloDAO {
             return true;
 
         } catch (SQLException e) {
-            System.out.println("❌ Error al insertar artículo: " + e.getMessage());
+            System.out.println("Error al insertar artículo: " + e.getMessage());
             return false;
         }
     }
