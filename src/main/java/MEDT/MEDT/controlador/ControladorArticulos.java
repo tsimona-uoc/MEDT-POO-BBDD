@@ -27,11 +27,11 @@ public class ControladorArticulos {
         }
     }
 
-    public Articulo buscarPorCodigo (String codigo) {
-        return  articuloDAO.buscarPorCodigo(codigo);
+    public Articulo getArticulo (String codigo) {
+        return  articuloDAO.getArticulo(codigo);
     }
 
-    public List<Articulo> listarTodos() {
-        return articuloDAO.listarTodos();
+    public List<Articulo> getArticulos() {
+        return articuloDAO.getArticulos();
     }
 }

@@ -34,7 +34,7 @@ public class ArticuloJDBC implements ArticuloDAO {
     }
 
     @Override
-    public Articulo buscarPorCodigo(String codigo) {
+    public Articulo getArticulo(String codigo) {
         String sql = "SELECT * FROM articulo WHERE codigo = ?";
 
         try (Connection con = ConnectionUtil.getConnection();
@@ -64,7 +64,7 @@ public class ArticuloJDBC implements ArticuloDAO {
 
 
     @Override
-    public List<Articulo> listarTodos() {
+    public List<Articulo> getArticulos() {
         String sql = "SELECT * FROM articulo";
         List<Articulo> articulos = new java.util.ArrayList<>();
 

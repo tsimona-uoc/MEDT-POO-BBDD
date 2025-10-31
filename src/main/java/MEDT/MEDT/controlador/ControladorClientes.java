@@ -4,15 +4,17 @@ import MEDT.MEDT.modelo.Cliente;
 import MEDT.MEDT.modelo.ClienteEstandar;
 import MEDT.MEDT.modelo.ClientePremium;
 import MEDT.MEDT.modelo.Datos;
+import MEDT.MEDT.persistencia.DAO.ClienteDAO;
+import MEDT.MEDT.persistencia.JDBC.ClienteJDBC;
 
 import java.util.List;
 
 public class ControladorClientes {
 
-    private Datos datos;
+    private ClienteDAO clienteDAO;
 
-    public ControladorClientes(Datos datos) {
-        this.datos = datos;
+    public ControladorClientes() {
+        this.clienteDAO = new ClienteJDBC();
     }
 
     // =======================
@@ -20,31 +22,31 @@ public class ControladorClientes {
     // =======================
     public boolean addClienteEstandar(String nombre, String domicilio, String nif, String email) {
         ClienteEstandar cliente = new ClienteEstandar(nombre, domicilio, nif, email);
-        return datos.addCliente(cliente);
+        return clienteDAO.addCliente(cliente);
     }
 
     public boolean addClientePremium(String nombre, String domicilio, String nif, String email) {
         ClientePremium cliente = new ClientePremium(nombre, domicilio, nif, email);
-        return datos.addCliente(cliente);
+        return clienteDAO.addCliente(cliente);
     }
 
     public List<Cliente> getClientes() {
-        return datos.getClientes().stream().toList();
+        return clienteDAO.getClientes().stream().toList();
     }
 
     public List<Cliente> getClientesEstandar() {
-        return datos.getClientesEstandar().stream().toList();
+        return clienteDAO.getClientesEstandar().stream().toList();
     }
 
     public List<Cliente> getClientesPremium() {
-        return datos.getClientesPremium().stream().toList();
+        return clienteDAO.getClientesPremium().stream().toList();
     }
 
 
 
     public boolean existeCliente(String nif){
         try {
-            return datos.getCliente(nif) != null;
+            return clienteDAO.getCliente(nif) != null;
         }
         catch (Exception e) {
             return false;

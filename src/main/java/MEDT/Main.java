@@ -11,7 +11,7 @@ public class Main {
         Datos datos = new Datos();
         ControladorArticulos ca = new ControladorArticulos();
         ControladorPedidos cp = new ControladorPedidos(datos);
-        ControladorClientes cc = new ControladorClientes(datos);
+        ControladorClientes cc = new ControladorClientes();
         new Vista(cp, ca, cc).menu();
     }
 }

@@ -76,20 +76,16 @@ public class Vista {
             case 2 -> {
                 System.out.println("Código: ");
                 String codigo = sc.nextLine();
-                Articulo articulo = controladorArticulos.buscarPorCodigo(codigo);
+                Articulo articulo = controladorArticulos.getArticulo(codigo);
 
                 if (articulo != null) {
-                    System.out.println("Artículo encontrado! " +
-                            "Descripción: " + articulo.getDescripcion() +
-                            ", Precio: " + articulo.getPrecio() +
-                            ", Gastos de envío: " + articulo.getGastosEnvio() +
-                            ", Tiempo de preparación: " + articulo.getTiempoPrep());
+                    System.out.println(STR."Artículo encontrado! Descripción: \{articulo.getDescripcion()}, Precio: \{articulo.getPrecio()}, Gastos de envío: \{articulo.getGastosEnvio()}, Tiempo de preparación: \{articulo.getTiempoPrep()}");
                 } else {
                     System.out.println("No existe ningún artículo con ese código.");
                 }
             }
             case 3 -> {
-                List<Articulo> articulos = this.controladorArticulos.listarTodos();
+                List<Articulo> articulos = this.controladorArticulos.getArticulos();
                 if (articulos.isEmpty()) {
                     System.out.println("No hay artículos registrados.");
                 } else {
