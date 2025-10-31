@@ -45,7 +45,16 @@ public class ClienteJDBC implements ClienteDAO {
 
     @Override
     public Cliente getCliente(String nif) {
-        return null;
+        String sql = "SELECT * FROM cliente WHERE nif = ?";
+
+        try (Connection con = ConnectionUtil.getConnection();
+            PreparedStatement ps = con.prepareStatement(sql)){
+
+            ps.setString(1, nif);
+        } catch (SQLException e) {
+            System.out.println("Error al buscar cliente: " + e.getMessage());
+            return null;
+        }
     }
 
     @Override
