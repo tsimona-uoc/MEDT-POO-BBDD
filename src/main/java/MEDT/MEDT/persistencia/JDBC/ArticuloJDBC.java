@@ -41,7 +41,6 @@ public class ArticuloJDBC implements ArticuloDAO {
              PreparedStatement ps = con.prepareStatement(sql)) {
 
             ps.setString(1, codigo);
-
             var rs = ps.executeQuery();
 
             if (rs.next()) {

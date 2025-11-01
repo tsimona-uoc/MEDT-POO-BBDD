@@ -1,9 +1,9 @@
 package MEDT.MEDT.controlador;
 
+import MEDT.MEDT.modelo.Articulo;
 import MEDT.MEDT.modelo.Cliente;
 import MEDT.MEDT.modelo.ClienteEstandar;
 import MEDT.MEDT.modelo.ClientePremium;
-import MEDT.MEDT.modelo.Datos;
 import MEDT.MEDT.persistencia.DAO.ClienteDAO;
 import MEDT.MEDT.persistencia.JDBC.ClienteJDBC;
 
@@ -42,6 +42,9 @@ public class ControladorClientes {
         return clienteDAO.getClientesPremium().stream().toList();
     }
 
+    public Cliente getCliente (String nif) {
+        return  clienteDAO.getCliente(nif);
+    }
 
 
     public boolean existeCliente(String nif){

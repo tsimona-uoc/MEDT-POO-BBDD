@@ -5,7 +5,7 @@ public class ClientePremium extends Cliente {
     private static final double DESCUENTO = 0.2;
 
     public ClientePremium(String nombre, String domicilio, String nif, String email) {
-        super(nombre, domicilio, nif, email);
+        super(nombre, domicilio, nif, email, "Premium");
     }
 
     public static double getCuota() {

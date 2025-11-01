@@ -100,6 +100,7 @@ public class Vista {
         System.out.println("--Gestor de Clientes--");
         System.out.println("1. Añadir Cliente");
         System.out.println("2. Mostrar Clientes");
+        System.out.println("3. Buscar Cliente por NIF");
         System.out.print("Elige opción: ");
         int opcion = Integer.parseInt(sc.nextLine());
 
@@ -126,6 +127,18 @@ public class Vista {
             }
             case 2 -> {
                 this.subMenuClientes();
+            }
+
+            case 3 -> {
+                System.out.println("Introduzca el NIF: ");
+                String nif = sc.nextLine();
+                Cliente cliente = controladorClientes.getCliente(nif);
+
+                if (cliente != null) {
+                    System.out.println(STR."Cliente encontrado! Nombre: \{cliente.getNombre()}, Domicilio: \{cliente.getDomicilio()}, Email: \{cliente.getEmail()}, Tipo: \{cliente.getTipo()}");
+                } else {
+                    System.out.println("No existe ningún cliente con ese NIF.");
+                }
             }
             default -> System.out.println("Opción no válida.");
         }

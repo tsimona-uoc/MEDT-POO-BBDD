@@ -16,23 +16,15 @@ public class ClienteJDBC implements ClienteDAO {
 
     @Override
     public boolean addCliente(Cliente cliente) {
-        String sql = "INSERT INTO cliente (nif, nombre, domicilio, email, tipo) VALUES (?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO cliente (nombre, domicilio, nif, email, tipo) VALUES (?, ?, ?, ?, ?)";
 
         try (Connection con = ConnectionUtil.getConnection();
             PreparedStatement ps = con.prepareStatement(sql)) {
-            ps.setString(1, cliente.getNif());
-            ps.setString(2, cliente.getNombre());
-            ps.setString(3, cliente.getDomicilio());
+            ps.setString(1, cliente.getNombre());
+            ps.setString(2, cliente.getDomicilio());
+            ps.setString(3, cliente.getNif());
             ps.setString(4, cliente.getEmail());
-
-            // Determinar tipo de cliente (Estandar o Premium)
-            if (cliente instanceof ClienteEstandar) {
-                ps.setString(5, "Estandar");
-            } else if (cliente instanceof ClientePremium) {
-                ps.setString(5, "Premium");
-            } else {
-                ps.setString(5, "Estandar"); // valor por defecto
-            }
+            ps.setString(5, cliente.getTipo());
 
             ps.executeUpdate();
             return true;
@@ -51,6 +43,25 @@ public class ClienteJDBC implements ClienteDAO {
             PreparedStatement ps = con.prepareStatement(sql)){
 
             ps.setString(1, nif);
+            var rs = ps.executeQuery();
+
+            if (rs.next()){
+                // Crear el objeto Cliente con los datos del registro
+                String nombre = rs.getString("nombre");
+                String domicilio = rs.getString("domicilio");
+                String email = rs.getString("email");
+                String tipo = rs.getString("tipo");
+
+                // Crear objeto según el tipo
+                if ("Premium".equalsIgnoreCase(tipo)) {
+                    return new ClientePremium(nombre, domicilio, nif, email);
+                } else {
+                    return new ClienteEstandar(nombre, domicilio, nif, email);
+                }
+            } else {
+                return null;
+            }
+
         } catch (SQLException e) {
             System.out.println("Error al buscar cliente: " + e.getMessage());
             return null;

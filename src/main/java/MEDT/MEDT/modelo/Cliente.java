@@ -8,16 +8,18 @@ public abstract class Cliente {
     private String domicilio;
     private String nif;
     private String email;
+    private String tipo;
 
     // Asociación con Pedido
     private List<Pedido> pedidos = new ArrayList<>();
 
     //Constructor
-    public Cliente(String nombre, String domicilio, String nif, String email) {
+    public Cliente(String nombre, String domicilio, String nif, String email, String tipo) {
         this.nombre = nombre;
         this.domicilio = domicilio;
         this.nif = nif;
         this.email = email;
+        this.tipo = tipo;
     }
 
     // Getters y Setters
@@ -53,6 +55,14 @@ public abstract class Cliente {
         this.email = email;
     }
 
+    public String getTipo() {
+        return tipo;
+    }
+
+    public void setTipo(String tipo) {
+        this.tipo = tipo;
+    }
+
     public List<Pedido> getPedidos() {
         return pedidos;
     }
@@ -68,6 +78,7 @@ public abstract class Cliente {
                 ", domicilo='" + domicilio + '\'' +
                 ", nif='" + nif + '\'' +
                 ", email=" + email +
+                ", tipo=" + tipo +
                 '}';
     }
 }
