@@ -2,10 +2,15 @@ package MEDT.MEDT.controlador;
 
 import MEDT.MEDT.modelo.Articulo;
 import MEDT.MEDT.modelo.Cliente;
-import MEDT.MEDT.modelo.Datos;
 import MEDT.MEDT.modelo.Pedido;
 import MEDT.MEDT.modelo.excepciones.ArticuloNoEncontradoException;
 import MEDT.MEDT.modelo.excepciones.PedidoNoCancelableException;
+import MEDT.MEDT.persistencia.DAO.PedidoDAO;
+import MEDT.MEDT.persistencia.DAO.ClienteDAO;
+import  MEDT.MEDT.persistencia.DAO.ArticuloDAO;
+import MEDT.MEDT.persistencia.JDBC.PedidoJDBC;
+import MEDT.MEDT.persistencia.JDBC.ArticuloJDBC;
+import MEDT.MEDT.persistencia.JDBC.ClienteJDBC;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -13,10 +18,14 @@ import java.util.Objects;
 
 public class ControladorPedidos {
 
-    private Datos datos;
+    private PedidoDAO pedidoDAO;
+    private ArticuloDAO articuloDAO;
+    private ClienteDAO clienteDAO;
 
-    public ControladorPedidos(Datos datos){
-        this.datos = datos;
+    public ControladorPedidos(){
+        this.pedidoDAO = new PedidoJDBC();
+        this.articuloDAO = new ArticuloJDBC();
+        this.clienteDAO = new ClienteJDBC();
     }
 
     // =======================
@@ -24,8 +33,8 @@ public class ControladorPedidos {
     // =======================
     public String addPedido(int numPedido, int cantidad, LocalDateTime fechaHora, String codigoArticulo, String nifCliente) {
         try {
-            Articulo articulo = datos.getArticulo(codigoArticulo);
-            Cliente cliente = datos.getCliente(nifCliente);
+            Articulo articulo = articuloDAO.getArticulo(codigoArticulo);
+            Cliente cliente = clienteDAO.getCliente(nifCliente);
 
             if (articulo == null)
                 return "Error: el artículo no existe.";
@@ -33,40 +42,38 @@ public class ControladorPedidos {
                 return "Error: el cliente no existe. Debe crearlo antes de continuar.";
 
             Pedido pedido = new Pedido(numPedido, cantidad, fechaHora, articulo, cliente);
-            if (datos.addPedido(pedido)) {
+            if (pedidoDAO.addPedido(pedido)) {
                 return "Pedido añadido correctamente.";
             } else {
                 return "Error: el pedido no se pudo añadir (posible duplicado).";
             }
-        } catch (ArticuloNoEncontradoException e) {
-            return "Error: Artículo no encontrado." + e.getMessage();
         } catch (Exception e) {
             return "Error inesperado al añadir pedido: " + e.getMessage();
         }
     }
 
     public boolean eliminarPedido(int numPedido) throws PedidoNoCancelableException {
-        Pedido pedido = datos.getPedido(numPedido);
+        Pedido pedido = pedidoDAO.getPedido(numPedido);
         if (pedido == null) {
             throw new IllegalArgumentException("No existe ningún pedido con ese número.");
         }
-        datos.cancelarPedido(pedido); // si no se puede cancelar, lanza la excepción
+        pedidoDAO.cancelarPedido(pedido); // si no se puede cancelar, lanza la excepción
         return false;
     }
 
 
     public List<Pedido> getPedidosPendientes(String nif) {
         if (Objects.equals(nif, "")){
-            return datos.getPedidosPendientes();
+            return pedidoDAO.getPedidosPendientes(nif);
         }
 
-        return datos.getPedidosPendientes().stream().filter(x -> x.getCliente().getNif().equals(nif)).toList();
+        return pedidoDAO.getPedidosPendientes(nif).stream().filter(x -> x.getCliente().getNif().equals(nif)).toList();
     }
 
     public List<Pedido> getPedidosEnviados(String nif) {
         if (Objects.equals(nif, "")){
-            return datos.getPedidosEnviados();
+            return pedidoDAO.getPedidosEnviados(nif);
         }
-        return datos.getPedidosEnviados().stream().filter(x -> x.getCliente().getNif().equals(nif)).toList();
+        return pedidoDAO.getPedidosEnviados(nif).stream().filter(x -> x.getCliente().getNif().equals(nif)).toList();
     }
 }

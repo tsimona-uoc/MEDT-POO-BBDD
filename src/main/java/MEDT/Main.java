@@ -10,7 +10,7 @@ public class Main {
     public static void main(String[] args) {
         Datos datos = new Datos();
         ControladorArticulos ca = new ControladorArticulos();
-        ControladorPedidos cp = new ControladorPedidos(datos);
+        ControladorPedidos cp = new ControladorPedidos();
         ControladorClientes cc = new ControladorClientes();
         new Vista(cp, ca, cc).menu();
     }

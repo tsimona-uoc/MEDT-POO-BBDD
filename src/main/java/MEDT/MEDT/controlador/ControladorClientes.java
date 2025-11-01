@@ -1,6 +1,5 @@
 package MEDT.MEDT.controlador;
 
-import MEDT.MEDT.modelo.Articulo;
 import MEDT.MEDT.modelo.Cliente;
 import MEDT.MEDT.modelo.ClienteEstandar;
 import MEDT.MEDT.modelo.ClientePremium;
