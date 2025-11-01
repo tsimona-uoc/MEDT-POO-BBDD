@@ -8,7 +8,9 @@ import MEDT.MEDT.persistencia.DAO.ClienteDAO;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Collection;
 import  java.util.List;
 
@@ -43,7 +45,7 @@ public class ClienteJDBC implements ClienteDAO {
             PreparedStatement ps = con.prepareStatement(sql)){
 
             ps.setString(1, nif);
-            var rs = ps.executeQuery();
+            ResultSet rs = ps.executeQuery();
 
             if (rs.next()){
                 // Crear el objeto Cliente con los datos del registro
@@ -69,17 +71,89 @@ public class ClienteJDBC implements ClienteDAO {
     }
 
     @Override
-    public Collection<Cliente> getClientes() {
-        return List.of();
+    public List<Cliente> getClientes() {
+        String sql = "SELECT * FROM cliente";
+        List<Cliente> clientes = new ArrayList<>();
+
+        try (Connection con = ConnectionUtil.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+
+            while (rs.next()) {
+                String nif = rs.getString("nif");
+                String nombre = rs.getString("nombre");
+                String domicilio = rs.getString("domicilio");
+                String email = rs.getString("email");
+                String tipo = rs.getString("tipo");
+
+                Cliente cliente;
+                if ("Premium".equalsIgnoreCase(tipo)) {
+                    cliente = new ClientePremium(nombre, domicilio, nif, email);
+                } else {
+                    cliente = new ClienteEstandar(nombre, domicilio, nif, email);
+                }
+
+                clientes.add(cliente);
+            }
+
+        } catch (SQLException e) {
+            System.out.println("Error al listar clientes: " + e.getMessage());
+        }
+
+        return clientes;
     }
 
     @Override
     public List<Cliente> getClientesEstandar() {
-        return List.of();
+        String sql = "SELECT * FROM cliente WHERE tipo = 'Estandar'";
+        List<Cliente> clientes = new ArrayList<>();
+
+        try (Connection con = ConnectionUtil.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+
+            while (rs.next()) {
+                String nif = rs.getString("nif");
+                String nombre = rs.getString("nombre");
+                String domicilio = rs.getString("domicilio");
+                String email = rs.getString("email");
+                String tipo = rs.getString("tipo");
+
+                Cliente cliente = new ClienteEstandar(nombre, domicilio, nif, email);
+                clientes.add(cliente);
+            }
+
+        } catch (SQLException e) {
+            System.out.println("Error al listar clientes: " + e.getMessage());
+        }
+
+        return clientes;
     }
 
     @Override
     public List<Cliente> getClientesPremium() {
-        return List.of();
+        String sql = "SELECT * FROM cliente WHERE tipo = 'Premium'";
+        List<Cliente> clientes = new ArrayList<>();
+
+        try (Connection con = ConnectionUtil.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+
+            while (rs.next()) {
+                String nif = rs.getString("nif");
+                String nombre = rs.getString("nombre");
+                String domicilio = rs.getString("domicilio");
+                String email = rs.getString("email");
+                String tipo = rs.getString("tipo");
+
+                Cliente cliente = new ClientePremium(nombre, domicilio, nif, email);
+                clientes.add(cliente);
+            }
+
+        } catch (SQLException e) {
+            System.out.println("Error al listar clientes: " + e.getMessage());
+        }
+
+        return clientes;
     }
 }

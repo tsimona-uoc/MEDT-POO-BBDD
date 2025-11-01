@@ -7,7 +7,8 @@ import MEDT.MEDT.persistencia.DAO.ArticuloDAO;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import  java.util.List;
+import java.sql.ResultSet;
+import java.util.List;
 
 public class ArticuloJDBC implements ArticuloDAO {
 
@@ -41,10 +42,10 @@ public class ArticuloJDBC implements ArticuloDAO {
              PreparedStatement ps = con.prepareStatement(sql)) {
 
             ps.setString(1, codigo);
-            var rs = ps.executeQuery();
+            ResultSet rs = ps.executeQuery();
 
             if (rs.next()) {
-                // Crear el objeto Articulo con los datos del registro
+                // Crear el objeto Artículo con los datos del registro
                 String descripcion = rs.getString("descripcion");
                 double precio = rs.getDouble("precio");
                 double gastosEnvio = rs.getDouble("gastosEnvio");
@@ -69,7 +70,7 @@ public class ArticuloJDBC implements ArticuloDAO {
 
         try (Connection con = ConnectionUtil.getConnection();
              PreparedStatement ps = con.prepareStatement(sql);
-             var rs = ps.executeQuery()) {
+             ResultSet rs = ps.executeQuery()) {
 
             while (rs.next()) {
                 String codigo = rs.getString("codigo");
