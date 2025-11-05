@@ -21,11 +21,13 @@ public class ControladorPedidos {
     private PedidoDAO pedidoDAO;
     private ArticuloDAO articuloDAO;
     private ClienteDAO clienteDAO;
+    private ControladorClientes controladorClientes;
 
     public ControladorPedidos(){
         this.pedidoDAO = new PedidoJDBC();
         this.articuloDAO = new ArticuloJDBC();
         this.clienteDAO = new ClienteJDBC();
+        this.controladorClientes = new ControladorClientes();
     }
 
     // =======================
@@ -34,12 +36,20 @@ public class ControladorPedidos {
     public String addPedido(int numPedido, int cantidad, LocalDateTime fechaHora, String codigoArticulo, String nifCliente) {
         try {
             Articulo articulo = articuloDAO.getArticulo(codigoArticulo);
-            Cliente cliente = clienteDAO.getCliente(nifCliente);
 
             if (articulo == null)
                 return "Error: el artículo no existe.";
-            if (cliente == null)
-                return "Error: el cliente no existe. Debe crearlo antes de continuar.";
+
+            Cliente cliente = clienteDAO.getCliente(nifCliente);
+
+            if (cliente == null) {
+                boolean resultado = clienteDAO.addCliente(cliente);
+
+                if (!resultado) {
+                    return "Error: no se pudo crear el cliente. " + resultado;
+                }
+                cliente = clienteDAO.getCliente(nifCliente);
+            }
 
             Pedido pedido = new Pedido(numPedido, cantidad, fechaHora, articulo, cliente);
             if (pedidoDAO.addPedido(pedido)) {
@@ -52,14 +62,20 @@ public class ControladorPedidos {
         }
     }
 
-    public boolean eliminarPedido(int numPedido) throws PedidoNoCancelableException {
-        Pedido pedido = pedidoDAO.getPedido(numPedido);
-        if (pedido == null) {
-            throw new IllegalArgumentException("No existe ningún pedido con ese número.");
+    public String eliminarPedido(int numPedido) {
+        try {
+            if (pedidoDAO.eliminarPedido(numPedido)) {
+                return "Pedido eliminado correctamente.";
+            } else {
+                return "No existe ningún pedido con ese número.";
+            }
+        } catch (PedidoNoCancelableException e) {
+            return "Error: " + e.getMessage();
+        } catch (Exception e) {
+            return "Error inesperado al eliminar pedido: " + e.getMessage();
         }
-        pedidoDAO.cancelarPedido(pedido); // si no se puede cancelar, lanza la excepción
-        return false;
     }
+
 
 
     public List<Pedido> getPedidosPendientes(String nif) {

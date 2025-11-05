@@ -117,10 +117,7 @@ public class Vista {
                 System.out.print("Tipo de cliente (1=Estandar, 2=Premium): ");
                 int tipo = Integer.parseInt(sc.nextLine());
 
-                boolean ok = (tipo == 1)
-                        ? this.controladorClientes.addClienteEstandar(nombre, domicilio, nif, email)
-                        : this.controladorClientes.addClientePremium(nombre, domicilio, nif, email);
-                if (ok)
+                if (this.controladorClientes.addCliente(nombre, domicilio, nif, email, tipo))
                     System.out.println("Cliente añadido correctamente.");
                 else
                     System.out.println("Error: el cliente ya existe o no se pudo añadir.");
@@ -218,7 +215,6 @@ public class Vista {
         int cantidad = Integer.parseInt(sc.nextLine());
         System.out.print("Fecha del pedido (yyyy-MM-dd HH:mm): ");
         LocalDateTime fecha = LocalDateTime.parse(sc.nextLine(), DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
-
         System.out.print("Código del artículo: ");
         String codigoArticulo = sc.nextLine();
         System.out.print("NIF del cliente: ");
@@ -238,16 +234,10 @@ public class Vista {
             System.out.print("Tipo de cliente (1=Estandar, 2=Premium): ");
             int tipo = Integer.parseInt(sc.nextLine());
 
-            boolean ok = (tipo == 1)
-                    ? this.controladorClientes.addClienteEstandar(nombre, domicilio, nif, email)
-                    : this.controladorClientes.addClientePremium(nombre, domicilio, nif, email);
-            if (ok){
+            if (this.controladorClientes.addCliente(nombre, domicilio, nif, email, tipo))
                 System.out.println("Cliente añadido correctamente.");
-            }
-            else{
-                System.out.println("Error: No se ha podido registrar el cliente.");
-                return;
-            }
+            else
+                System.out.println("Error: el cliente ya existe o no se pudo añadir.");
         }
 
         String resultado = this.controladorPedidos.addPedido(numPedido, cantidad, fecha, codigoArticulo, nif);
@@ -258,15 +248,11 @@ public class Vista {
         System.out.print("Número del pedido a eliminar: ");
         int num = Integer.parseInt(sc.nextLine());
 
-        try {
-            this.controladorPedidos.eliminarPedido(num);
-            System.out.println("Pedido eliminado correctamente.");
-        } catch (PedidoNoCancelableException e) {
-            System.out.println("No se puede eliminar el pedido: " + e.getMessage());
-        } catch (IllegalArgumentException e) {
-            System.out.println(e.getMessage());
-        }
+        String mensaje = controladorPedidos.eliminarPedido(num);
+        System.out.println(mensaje);
     }
+
+
 
     private void mostrarPedidosPendientes(String filtro) {
         List<Pedido> pedidos = this.controladorPedidos.getPedidosPendientes(filtro);

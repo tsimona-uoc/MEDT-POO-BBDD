@@ -19,15 +19,16 @@ public class ControladorClientes {
     // =======================
     //  CLIENTES
     // =======================
-    public boolean addClienteEstandar(String nombre, String domicilio, String nif, String email) {
-        ClienteEstandar cliente = new ClienteEstandar(nombre, domicilio, nif, email);
+    public boolean addCliente(String nombre, String domicilio, String nif, String email, int tipo) {
+        Cliente cliente;
+        if (tipo == 1) {
+            cliente = new ClienteEstandar(nombre, domicilio, nif, email);
+        } else {
+            cliente = new ClientePremium(nombre, domicilio, nif, email);
+        }
         return clienteDAO.addCliente(cliente);
     }
 
-    public boolean addClientePremium(String nombre, String domicilio, String nif, String email) {
-        ClientePremium cliente = new ClientePremium(nombre, domicilio, nif, email);
-        return clienteDAO.addCliente(cliente);
-    }
 
     public List<Cliente> getClientes() {
         return clienteDAO.getClientes().stream().toList();
