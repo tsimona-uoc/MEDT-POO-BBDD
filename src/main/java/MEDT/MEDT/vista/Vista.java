@@ -189,13 +189,13 @@ public class Vista {
 
         String filtro = "";
 
-        if (opcion == 3 || opcion == 4){
-            String userOption = "";
-            System.out.println("Desea filtrar? S/N:");
-            userOption = sc.nextLine();
-            if (userOption.equals("S")){
-                System.out.println("Introduzca el DNI:");
-                filtro = sc.nextLine();
+        if (opcion == 3 || opcion == 4) {
+            System.out.print("¿Desea filtrar por DNI? (S/N): ");
+            String userOption = sc.nextLine().trim().toUpperCase();
+
+            if (userOption.equals("S")) {
+                System.out.print("Introduzca el DNI: ");
+                filtro = sc.nextLine().trim();
             }
         }
 
@@ -251,8 +251,6 @@ public class Vista {
         String mensaje = controladorPedidos.eliminarPedido(num);
         System.out.println(mensaje);
     }
-
-
 
     private void mostrarPedidosPendientes(String filtro) {
         List<Pedido> pedidos = this.controladorPedidos.getPedidosPendientes(filtro);

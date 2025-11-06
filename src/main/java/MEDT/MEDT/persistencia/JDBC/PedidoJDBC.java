@@ -1,7 +1,12 @@
 package MEDT.MEDT.persistencia.JDBC;
 
+import MEDT.MEDT.modelo.Articulo;
+import MEDT.MEDT.modelo.Cliente;
+import MEDT.MEDT.modelo.ClienteEstandar;
 import MEDT.MEDT.modelo.Pedido;
 import MEDT.MEDT.modelo.excepciones.PedidoNoCancelableException;
+import MEDT.MEDT.persistencia.DAO.ArticuloDAO;
+import MEDT.MEDT.persistencia.DAO.ClienteDAO;
 import MEDT.MEDT.persistencia.DAO.PedidoDAO;
 import MEDT.MEDT.persistencia.connection.ConnectionUtil;
 
@@ -11,9 +16,19 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.Duration;
 import java.time.LocalDateTime;
-import  java.util.List;
+import java.util.ArrayList;
+import java.util.List;
 
 public class PedidoJDBC implements PedidoDAO {
+
+    private ArticuloDAO articuloDAO;
+    private ClienteDAO clienteDAO;
+
+    public PedidoJDBC() {
+        this.articuloDAO = new ArticuloJDBC();
+        this.clienteDAO = new ClienteJDBC();
+    }
+
     @Override
     public boolean addPedido(Pedido pedido) {
 
@@ -80,17 +95,69 @@ public class PedidoJDBC implements PedidoDAO {
 
 
     @Override
-    public Pedido getPedido(int numPedido) {
-        return null;
+    public List<Pedido> getPedido() {
+        List<Pedido> pedidos = new ArrayList<>();
+        String sql = "SELECT * FROM pedido";
+
+        try (Connection con = ConnectionUtil.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+
+            while (rs.next()) {
+                int numPedido = rs.getInt("numPedido");
+                int cantidad = rs.getInt("cantidad");
+                LocalDateTime fechaHora = rs.getObject("fechaHora", LocalDateTime.class);
+                String codigoArticulo = rs.getString("articulo");
+                String nifCliente = rs.getString("cliente");
+
+                // Obtener los datos completos del artículo y cliente
+                Articulo articulo = articuloDAO.getArticulo(codigoArticulo);
+                Cliente cliente = clienteDAO.getCliente(nifCliente);
+
+                // Crear el pedido completo
+                Pedido pedido = new Pedido(numPedido, cantidad, fechaHora, articulo, cliente);
+                pedidos.add(pedido);
+            }
+
+        } catch (SQLException e) {
+            System.out.println("Error al obtener pedidos: " + e.getMessage());
+        }
+
+        return pedidos;
     }
+
+
 
     @Override
     public List<Pedido> getPedidosPendientes(String nif) {
-        return List.of();
+        List<Pedido> todos = getPedido();
+        List<Pedido> pendientes = new ArrayList<>();
+
+        for (Pedido p : todos) {
+            if (p.esCancelable()) { // si aún no ha pasado el tiempo de preparación
+                if (nif == null || nif.isEmpty() || p.getCliente().getNif().equalsIgnoreCase(nif)) {
+                    pendientes.add(p);
+                }
+            }
+        }
+
+        return pendientes;
     }
 
     @Override
     public List<Pedido> getPedidosEnviados(String nif) {
-        return List.of();
+        List<Pedido> todos = getPedido();
+        List<Pedido> enviados = new ArrayList<>();
+
+        for (Pedido p : todos) {
+            if (!p.esCancelable()) { // si ya pasó el tiempo de preparación
+                if (nif == null || nif.isEmpty() || p.getCliente().getNif().equalsIgnoreCase(nif)) {
+                    enviados.add(p);
+                }
+            }
+        }
+
+        return enviados;
     }
+
 }

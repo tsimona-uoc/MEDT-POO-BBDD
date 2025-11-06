@@ -10,7 +10,7 @@ public interface PedidoDAO {
 
     boolean addPedido(Pedido pedido);
     boolean eliminarPedido(int numPedido) throws PedidoNoCancelableException;
-    Pedido getPedido(int numPedido);
+    List<Pedido> getPedido();
     List<Pedido> getPedidosPendientes(String nif);
     List<Pedido> getPedidosEnviados(String nif);
 

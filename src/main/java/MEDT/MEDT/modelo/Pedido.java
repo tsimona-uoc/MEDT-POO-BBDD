@@ -82,6 +82,7 @@ public class Pedido {
         return "Pedido{" +
                 "numeroPedido='" + numPedido + '\'' +
                 ", cantidad='" + cantidad + '\'' +
+                ", fechaHora='" + fechaHora + '\'' +
                 ", cliente='" + cliente + '\'' +
                 ", articulo=" + articulo +
                 ", precioTotal='" + this.calcularPrecioTotal() + '\'' +

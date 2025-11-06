@@ -76,6 +76,10 @@ public class ControladorPedidos {
         }
     }
 
+    public List<Pedido> getPedido() {
+        return pedidoDAO.getPedido();
+    }
+
 
 
     public List<Pedido> getPedidosPendientes(String nif) {
