@@ -6,6 +6,7 @@ import MEDT.MEDT.controlador.ControladorPedidos;
 import MEDT.MEDT.modelo.Articulo;
 import MEDT.MEDT.modelo.Cliente;
 import MEDT.MEDT.modelo.Pedido;
+import MEDT.MEDT.modelo.excepciones.ArticuloNoEncontradoException;
 import MEDT.MEDT.modelo.excepciones.PedidoNoCancelableException;
 
 import java.time.LocalDateTime;
@@ -222,7 +223,7 @@ public class Vista {
 
         boolean existeCliente = this.controladorClientes.existeCliente(nif);
 
-        if (!existeCliente){
+        if (!existeCliente) {
             System.out.println("El cliente no existe, debe darlo de alta primero.");
 
             System.out.print("Nombre: ");
@@ -240,17 +241,26 @@ public class Vista {
                 System.out.println("Error: el cliente ya existe o no se pudo añadir.");
         }
 
-        String resultado = this.controladorPedidos.addPedido(numPedido, cantidad, fecha, codigoArticulo, nif);
-        System.out.println(resultado);
+        try {
+            String resultado = this.controladorPedidos.addPedido(numPedido, cantidad, fecha, codigoArticulo, nif);
+            System.out.println(resultado);
+        } catch (ArticuloNoEncontradoException e) {
+            System.out.println("No se pudo crear el pedido: " + e.getMessage());
+        }
     }
 
     private void eliminarPedido() {
         System.out.print("Número del pedido a eliminar: ");
         int num = Integer.parseInt(sc.nextLine());
 
-        String mensaje = controladorPedidos.eliminarPedido(num);
-        System.out.println(mensaje);
+        try {
+            String mensaje = controladorPedidos.eliminarPedido(num);
+            System.out.println(mensaje);
+        } catch (PedidoNoCancelableException e) {
+            System.out.println("No se pudo eliminar el pedido: " + e.getMessage());
+        }
     }
+
 
     private void mostrarPedidosPendientes(String filtro) {
         List<Pedido> pedidos = this.controladorPedidos.getPedidosPendientes(filtro);

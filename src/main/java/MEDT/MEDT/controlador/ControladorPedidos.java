@@ -33,12 +33,12 @@ public class ControladorPedidos {
     // =======================
     //  PEDIDOS
     // =======================
-    public String addPedido(int numPedido, int cantidad, LocalDateTime fechaHora, String codigoArticulo, String nifCliente) {
+    public String addPedido(int numPedido, int cantidad, LocalDateTime fechaHora, String codigoArticulo, String nifCliente) throws ArticuloNoEncontradoException {
         try {
             Articulo articulo = articuloDAO.getArticulo(codigoArticulo);
 
             if (articulo == null)
-                return "Error: el artículo no existe.";
+                throw new ArticuloNoEncontradoException("El artículo con código " + codigoArticulo + " no existe.");
 
             Cliente cliente = clienteDAO.getCliente(nifCliente);
 
@@ -57,30 +57,22 @@ public class ControladorPedidos {
             } else {
                 return "Error: el pedido no se pudo añadir (posible duplicado).";
             }
-        } catch (Exception e) {
+        }
+        catch (ArticuloNoEncontradoException e){
+            throw  e;
+        }
+        catch (Exception e) {
             return "Error inesperado al añadir pedido: " + e.getMessage();
         }
     }
 
-    public String eliminarPedido(int numPedido) {
-        try {
-            if (pedidoDAO.eliminarPedido(numPedido)) {
-                return "Pedido eliminado correctamente.";
-            } else {
-                return "No existe ningún pedido con ese número.";
-            }
-        } catch (PedidoNoCancelableException e) {
-            return "Error: " + e.getMessage();
-        } catch (Exception e) {
-            return "Error inesperado al eliminar pedido: " + e.getMessage();
+    public String eliminarPedido(int numPedido) throws PedidoNoCancelableException {
+        if (pedidoDAO.eliminarPedido(numPedido)) {
+            return "Pedido eliminado correctamente.";
+        } else {
+            return "No existe ningún pedido con ese número.";
         }
     }
-
-    public List<Pedido> getPedido() {
-        return pedidoDAO.getPedido();
-    }
-
-
 
     public List<Pedido> getPedidosPendientes(String nif) {
         if (Objects.equals(nif, "")){

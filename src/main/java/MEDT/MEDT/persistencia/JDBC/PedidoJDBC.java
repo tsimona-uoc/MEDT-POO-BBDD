@@ -2,7 +2,6 @@ package MEDT.MEDT.persistencia.JDBC;
 
 import MEDT.MEDT.modelo.Articulo;
 import MEDT.MEDT.modelo.Cliente;
-import MEDT.MEDT.modelo.ClienteEstandar;
 import MEDT.MEDT.modelo.Pedido;
 import MEDT.MEDT.modelo.excepciones.PedidoNoCancelableException;
 import MEDT.MEDT.persistencia.DAO.ArticuloDAO;
