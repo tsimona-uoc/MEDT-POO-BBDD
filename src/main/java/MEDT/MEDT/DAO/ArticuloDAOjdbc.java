@@ -13,7 +13,7 @@ import java.util.List;
 public class ArticuloDAOjdbc implements IArticuloDAO{
     @Override
     public void insert(Articulo articulo) throws SQLException{
-        String sql = "INSERT INTO articulos (codigo, descripcion, precio, gastosEnvio, tiempoPrep) VALUES(?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO articulo (codigo, descripcion, precio, gastosEnvio, tiempoPrep) VALUES(?, ?, ?, ?, ?)";
         try (Connection conn = DBConnection.getConnection();
             PreparedStatement ps = conn.prepareStatement(sql)){
                 ps.setString(1, articulo.getCodigo());
@@ -28,7 +28,7 @@ public class ArticuloDAOjdbc implements IArticuloDAO{
     @Override
     public List<Articulo> findAll() throws SQLException{
         List<Articulo> articulos = new ArrayList<>();
-        String sql = "SELECT * FROM articulos";
+        String sql = "SELECT * FROM articulo";
         try(Connection conn = DBConnection.getConnection();
             PreparedStatement ps = conn.prepareStatement(sql);
             ResultSet rs = ps.executeQuery()){
@@ -37,7 +37,7 @@ public class ArticuloDAOjdbc implements IArticuloDAO{
                 String descripcion = rs.getString("descripcion");
                 Double precio = rs.getDouble("precio");
                 Double gastosEnvio = rs.getDouble("gastosEnvio");
-                Integer tiempoPrep = rs.getInt("TiempoPrep");
+                Integer tiempoPrep = rs.getInt("tiempoPrep");
 
                 Articulo articulo = new Articulo(codigo, descripcion, precio, gastosEnvio, tiempoPrep);
                 articulos.add(articulo);

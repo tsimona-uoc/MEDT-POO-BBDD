@@ -71,14 +71,14 @@ public class Vista {
                     System.out.println("Error: el artículo ya existe o no se pudo añadir.");
                 }
             }
-//            case 2 -> {
-//                List<Articulo> articulos = ca.getArticulos();
-//                if (articulos.isEmpty()) {
-//                    System.out.println("No hay artículos registrados.");
-//                } else {
-//                    articulos.forEach(System.out::println);
-//                }
-//            }
+            case 2 -> {
+                List<Articulo> articulos = ca.getArticulos();
+                if (articulos.isEmpty()) {
+                    System.out.println("No hay artículos registrados.");
+                } else {
+                    articulos.forEach(System.out::println);
+                }
+            }
             default -> System.out.println("Opción no válida.");
         }
     }

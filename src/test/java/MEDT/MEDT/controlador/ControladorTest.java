@@ -43,14 +43,14 @@ class ControladorPedidosTest {
     private Pedido pedido;
 
 
-    @BeforeEach
-    void setUp() {
-        controlador = new ControladorPedidos(datos);
-        // Objetos de prueba usados para simular las respuestas del mock 'datos'
-        articulo = new Articulo(CODIGO_ARTICULO, "Descripción", 10.0, 5.0, 60);
-        cliente = new ClienteEstandar("Nombre", "Domicilio", NIF_CLIENTE, "email@test.com");
-        pedido = new Pedido(NUM_PEDIDO, CANTIDAD, FECHA_HORA, articulo, cliente);
-    }
+//    @BeforeEach
+//    void setUp() {
+//        controlador = new ControladorPedidos(datos);
+//        // Objetos de prueba usados para simular las respuestas del mock 'datos'
+//        articulo = new Articulo(CODIGO_ARTICULO, "Descripción", 10.0, 5.0, 60);
+//        cliente = new ClienteEstandar("Nombre", "Domicilio", NIF_CLIENTE, "email@test.com");
+//        pedido = new Pedido(NUM_PEDIDO, CANTIDAD, FECHA_HORA, articulo, cliente);
+//    }
 
     // ============================================================
     //  Tests para addPedido

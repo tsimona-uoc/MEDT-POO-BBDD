@@ -1,9 +1,6 @@
 package MEDT;
 
-import MEDT.MEDT.DAO.ArticuloDAOjdbc;
-import MEDT.MEDT.DAO.ClienteDAOjdbc;
-import MEDT.MEDT.DAO.IArticuloDAO;
-import MEDT.MEDT.DAO.IClienteDAO;
+import MEDT.MEDT.DAO.*;
 import MEDT.MEDT.controlador.ControladorArticulos;
 import MEDT.MEDT.controlador.ControladorClientes;
 import MEDT.MEDT.controlador.ControladorPedidos;
@@ -19,13 +16,11 @@ public class Main {
 
         IArticuloDAO articuloDAO = new ArticuloDAOjdbc();
         IClienteDAO clienteDAO = new ClienteDAOjdbc();
+        IPedidoDAO pedidoDAO = new PedidoDAOjdbc();
 
         ControladorArticulos ca = new ControladorArticulos(articuloDAO);
         ControladorClientes cc = new ControladorClientes(clienteDAO);
-
-        Datos datos = new Datos();
-
-        ControladorPedidos cp = new ControladorPedidos(datos);
+        ControladorPedidos cp = new ControladorPedidos(pedidoDAO, clienteDAO, articuloDAO);
         Vista vista = new Vista(ca, cc, cp);
 
         vista.menu();
