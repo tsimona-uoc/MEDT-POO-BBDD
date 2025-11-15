@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="DataSourcePerFileMappings">
+    <file url="file://$PROJECT_DIR$/src/main/java/MEDT/MEDT/DAO/ClienteDAOjdbc.java" value="46b134b1-d93b-40dd-b51e-3e529a207bc7" />
+    <file url="file://$PROJECT_DIR$/src/main/java/MEDT/MEDT/DAO/PedidoDAOjdbc.java" value="46b134b1-d93b-40dd-b51e-3e529a207bc7" />
+    <file url="file://$APPLICATION_CONFIG_DIR$/consoles/db/46b134b1-d93b-40dd-b51e-3e529a207bc7/console.sql" value="46b134b1-d93b-40dd-b51e-3e529a207bc7" />
+  </component>
+</project>

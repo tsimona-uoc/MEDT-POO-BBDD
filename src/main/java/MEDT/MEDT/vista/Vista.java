@@ -1,6 +1,8 @@
 package MEDT.MEDT.vista;
 
-import MEDT.MEDT.controlador.Controlador;
+import MEDT.MEDT.controlador.ControladorArticulos;
+import MEDT.MEDT.controlador.ControladorClientes;
+import MEDT.MEDT.controlador.ControladorPedidos;
 import MEDT.MEDT.modelo.Articulo;
 import MEDT.MEDT.modelo.Cliente;
 import MEDT.MEDT.modelo.Pedido;
@@ -13,10 +15,14 @@ import java.util.Scanner;
 
 public class Vista {
     private final Scanner sc = new Scanner(System.in);
-    private final Controlador controlador;
+    private final ControladorPedidos controladorPedidos;
+    private final ControladorArticulos controladorArticulos;
+    private final ControladorClientes controladorClientes;
 
-    public Vista(Controlador controlador) {
-        this.controlador = controlador;
+    public Vista(ControladorPedidos cp, ControladorArticulos ca, ControladorClientes cc) {
+        this.controladorArticulos = ca;
+        this.controladorClientes = cc;
+        this.controladorPedidos = cp;
     }
 
     public void menu() {
@@ -60,14 +66,14 @@ public class Vista {
                 System.out.print("Gastos de envío: ");
                 double gastosEnvio = Double.parseDouble(sc.nextLine());
 
-                if (controlador.addArticulo(codigo, descripcion, precio, gastosEnvio, tiempoPrep)) {
+                if (this.controladorArticulos.addArticulo(codigo, descripcion, precio, gastosEnvio, tiempoPrep)) {
                     System.out.println("Artículo añadido correctamente.");
                 } else {
                     System.out.println("Error: el artículo ya existe o no se pudo añadir.");
                 }
             }
             case 2 -> {
-                List<Articulo> articulos = controlador.getArticulos();
+                List<Articulo> articulos = this.controladorArticulos.getArticulos();
                 if (articulos.isEmpty()) {
                     System.out.println("No hay artículos registrados.");
                 } else {
@@ -99,8 +105,8 @@ public class Vista {
                 int tipo = Integer.parseInt(sc.nextLine());
 
                 boolean ok = (tipo == 1)
-                        ? controlador.addClienteEstandar(nombre, domicilio, nif, email)
-                        : controlador.addClientePremium(nombre, domicilio, nif, email);
+                        ? this.controladorClientes.addClienteEstandar(nombre, domicilio, nif, email)
+                        : this.controladorClientes.addClientePremium(nombre, domicilio, nif, email);
                 if (ok)
                     System.out.println("Cliente añadido correctamente.");
                 else
@@ -123,7 +129,7 @@ public class Vista {
 
         switch (opcion) {
             case 1 -> {
-                List<Cliente> clientes = controlador.getClientesEstandar();
+                List<Cliente> clientes = this.controladorClientes.getClientesEstandar();
                 if (clientes.isEmpty()) {
                     System.out.println("No hay clientes estandar registrados.");
                 } else {
@@ -131,7 +137,7 @@ public class Vista {
                 }
             }
             case 2 -> {
-                List<Cliente> clientes = controlador.getClientesPremium();
+                List<Cliente> clientes = this.controladorClientes.getClientesPremium();
                 if (clientes.isEmpty()) {
                     System.out.println("No hay clientes premium registrados.");
                 } else {
@@ -139,7 +145,7 @@ public class Vista {
                 }
             }
             case 3 -> {
-                List<Cliente> clientes = controlador.getClientes();
+                List<Cliente> clientes = this.controladorClientes.getClientes();
                 if (clientes.isEmpty()) {
                     System.out.println("No hay clientes registrados.");
                 } else {
@@ -163,10 +169,10 @@ public class Vista {
 
         if (opcion == 3 || opcion == 4){
             String userOption = "";
-            System.out.println("Desea filtrar? S/N:");
+            System.out.print("Desea filtrar? S/N:");
             userOption = sc.nextLine();
             if (userOption.equals("S")){
-                System.out.println("Introduzca el DNI:");
+                System.out.print("Introduzca el DNI:");
                 filtro = sc.nextLine();
             }
         }
@@ -193,7 +199,7 @@ public class Vista {
         System.out.print("NIF del cliente: ");
         String nif = sc.nextLine();
 
-        boolean existeCliente = controlador.existeCliente(nif);
+        boolean existeCliente = this.controladorClientes.existeCliente(nif);
 
         if (!existeCliente){
             System.out.println("El cliente no existe, debe darlo de alta primero.");
@@ -208,8 +214,8 @@ public class Vista {
             int tipo = Integer.parseInt(sc.nextLine());
 
             boolean ok = (tipo == 1)
-                    ? controlador.addClienteEstandar(nombre, domicilio, nif, email)
-                    : controlador.addClientePremium(nombre, domicilio, nif, email);
+                    ? this.controladorClientes.addClienteEstandar(nombre, domicilio, nif, email)
+                    : this.controladorClientes.addClientePremium(nombre, domicilio, nif, email);
             if (ok){
                 System.out.println("Cliente añadido correctamente.");
             }
@@ -219,7 +225,7 @@ public class Vista {
             }
         }
 
-        String resultado = controlador.addPedido(numPedido, cantidad, fecha, codigoArticulo, nif);
+        String resultado = this.controladorPedidos.addPedido(numPedido, cantidad, fecha, codigoArticulo, nif);
         System.out.println(resultado);
     }
 
@@ -228,7 +234,7 @@ public class Vista {
         int num = Integer.parseInt(sc.nextLine());
 
         try {
-            controlador.eliminarPedido(num);
+            this.controladorPedidos.eliminarPedido(num);
             System.out.println("Pedido eliminado correctamente.");
         } catch (PedidoNoCancelableException e) {
             System.out.println("No se puede eliminar el pedido: " + e.getMessage());
@@ -238,13 +244,13 @@ public class Vista {
     }
 
     private void mostrarPedidosPendientes(String filtro) {
-        List<Pedido> pedidos = controlador.getPedidosPendientes(filtro);
+        List<Pedido> pedidos = this.controladorPedidos.getPedidosPendientes(filtro);
         if (pedidos.isEmpty()) System.out.println("No hay pedidos pendientes.");
         else pedidos.forEach(System.out::println);
     }
 
     private void mostrarPedidosEnviados(String filtro) {
-        List<Pedido> pedidos = controlador.getPedidosEnviados(filtro);
+        List<Pedido> pedidos = this.controladorPedidos.getPedidosEnviados(filtro);
         if (pedidos.isEmpty()) System.out.println("No hay pedidos enviados.");
         else pedidos.forEach(System.out::println);
     }
