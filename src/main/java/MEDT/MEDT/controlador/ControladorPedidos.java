@@ -5,18 +5,14 @@ import MEDT.MEDT.DAO.IClienteDAO;
 import MEDT.MEDT.DAO.IPedidoDAO;
 import MEDT.MEDT.modelo.Articulo;
 import MEDT.MEDT.modelo.Cliente;
-import MEDT.MEDT.modelo.Datos;
 import MEDT.MEDT.modelo.Pedido;
-import MEDT.MEDT.modelo.excepciones.ArticuloNoEncontradoException;
 import MEDT.MEDT.modelo.excepciones.PedidoNoCancelableException;
-import MEDT.MEDT.modelo.excepciones.TipoClienteInvalidoException;
 
 import java.sql.SQLException;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 public class ControladorPedidos {
 
