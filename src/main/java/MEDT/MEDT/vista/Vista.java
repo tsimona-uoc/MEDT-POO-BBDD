@@ -199,6 +199,7 @@ public class Vista {
         System.out.print("NIF del cliente: ");
         String nif = sc.nextLine();
 
+        String resultado;
         boolean existeCliente = this.controladorClientes.existeCliente(nif);
 
         if (!existeCliente){
@@ -213,6 +214,10 @@ public class Vista {
             System.out.print("Tipo de cliente (1=Estandar, 2=Premium): ");
             int tipo = Integer.parseInt(sc.nextLine());
 
+            /// TODO: TRANSACCIÓN AGREGAR CLIENTE Y PEDIDO AL MISMO TIEMPO
+            resultado = "";
+
+            /*
             boolean ok = (tipo == 1)
                     ? this.controladorClientes.addClienteEstandar(nombre, domicilio, nif, email)
                     : this.controladorClientes.addClientePremium(nombre, domicilio, nif, email);
@@ -223,9 +228,17 @@ public class Vista {
                 System.out.println("Error: No se ha podido registrar el cliente.");
                 return;
             }
+            */
+            if (this.controladorPedidos.addPedidoYClienteAtomico(numPedido, cantidad, fecha, codigoArticulo, nif, nombre, domicilio, email, tipo)){
+                System.out.println("Pedido y cliente agregados correctamente.");
+            }
+            else{
+                System.out.println("Error al agregar el pedido y clientes.");
+            }
         }
-
-        String resultado = this.controladorPedidos.addPedido(numPedido, cantidad, fecha, codigoArticulo, nif);
+        else{
+            resultado = this.controladorPedidos.addPedido(numPedido, cantidad, fecha, codigoArticulo, nif);
+        }
         System.out.println(resultado);
     }
 

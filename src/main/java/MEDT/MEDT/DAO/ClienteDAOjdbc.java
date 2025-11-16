@@ -13,16 +13,11 @@ import java.util.List;
 /// JDBC implementation of DAO articulo
 public class ClienteDAOjdbc implements IClienteDAO {
 
-    /// Get a connection
-    private Connection getConnection() throws SQLException {
-        return DriverManager.getConnection("jdbc:mysql://localhost:3306/MEDT_POO_DDBB", "root", "password");
-    }
-
     /// Insert a new item
     @Override
     public void insert(Cliente cliente) throws SQLException {
         String sql = "INSERT INTO cliente (nif, nombre, domicilio, email, tipo) VALUES (?, ?, ?, ?, ?)";
-        try (Connection conn = this.getConnection();
+        try (Connection conn = ConnectionUtil.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setString(1, cliente.getNif());
@@ -38,7 +33,7 @@ public class ClienteDAOjdbc implements IClienteDAO {
     @Override
     public void update(Cliente cliente) throws SQLException {
         String sql = "UPDATE cliente SET nombre = ?, domicilio = ?, email = ?, tipo = ? WHERE nif = ?";
-        try (Connection conn = this.getConnection();
+        try (Connection conn = ConnectionUtil.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             /// UPDATE fields
@@ -57,7 +52,7 @@ public class ClienteDAOjdbc implements IClienteDAO {
     @Override
     public void delete(String nif) throws SQLException {
         String sql = "DELETE FROM cliente WHERE nif = ?";
-        try (Connection conn = this.getConnection();
+        try (Connection conn = ConnectionUtil.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             /// WHERE parameters
             stmt.setString(1, nif);
@@ -71,7 +66,7 @@ public class ClienteDAOjdbc implements IClienteDAO {
         Cliente cliente = null;
 
         String sql = "SELECT * FROM cliente WHERE nif = ?";
-        try (Connection conn = this.getConnection();
+        try (Connection conn = ConnectionUtil.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setString(1, nif);
@@ -101,7 +96,7 @@ public class ClienteDAOjdbc implements IClienteDAO {
         List<Cliente> clientes = new ArrayList<>();
 
         String sql = "SELECT * FROM cliente";
-        try (Connection conn = this.getConnection();
+        try (Connection conn = ConnectionUtil.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             ResultSet resultados = stmt.executeQuery();
 
@@ -131,7 +126,7 @@ public class ClienteDAOjdbc implements IClienteDAO {
         List<ClienteEstandar> clientes = new ArrayList<>();
 
         String sql = "SELECT * FROM cliente WHERE tipo = 'estandar'";
-        try (Connection conn = this.getConnection();
+        try (Connection conn = ConnectionUtil.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             ResultSet resultados = stmt.executeQuery();
 
@@ -155,7 +150,7 @@ public class ClienteDAOjdbc implements IClienteDAO {
         List<ClientePremium> clientes = new ArrayList<>();
 
         String sql = "SELECT * FROM cliente WHERE tipo = 'premium'";
-        try (Connection conn = this.getConnection();
+        try (Connection conn = ConnectionUtil.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             ResultSet resultados = stmt.executeQuery();
 
@@ -179,7 +174,7 @@ public class ClienteDAOjdbc implements IClienteDAO {
         int count = 0;
 
         String sql = "SELECT count(*) FROM cliente WHERE nif = ?";
-        try (Connection conn = this.getConnection();
+        try (Connection conn = ConnectionUtil.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setString(1, nif);
             ResultSet resultados = stmt.executeQuery();
