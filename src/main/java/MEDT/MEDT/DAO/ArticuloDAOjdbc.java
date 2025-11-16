@@ -34,7 +34,7 @@ public class ArticuloDAOjdbc implements IArticuloDAO {
     /// Update a given item
     @Override
     public void update(Articulo articulo) throws SQLException {
-        String sql = "UPDATE articulo SET descripcion = ?, precio = ?,  gastosEnvio = ?, tiempoPrep = ? WHERE codigo = ?";
+        String sql = "UPDATE articulo SET descripcion = ?, precio = ?,  gastosEnvio = ?, tiempoPreparacion = ? WHERE codigo = ?";
         try (Connection conn = this.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
 

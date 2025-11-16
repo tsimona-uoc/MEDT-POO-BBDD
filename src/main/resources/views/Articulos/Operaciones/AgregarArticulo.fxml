@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<AnchorPane fx:id="root" prefHeight="494.0" prefWidth="748.0" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="MEDT.MEDT.vista.Articulo.Operaciones.AgregarArticulo">
+    <children>
+      <VBox prefHeight="200.0" prefWidth="100.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <children>
+            <VBox maxHeight="1.7976931348623157E308" prefHeight="200.0" prefWidth="100.0" VBox.vgrow="ALWAYS">
+               <children>
+                      <VBox prefHeight="55.0" prefWidth="748.0">
+                          <children>
+                              <Label text="Codigo">
+                                  <font>
+                                      <Font size="14.0" />
+                                  </font>
+                        </Label>
+                              <TextField fx:id="tfCodigo" />
+                          </children>
+                          <padding>
+                              <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                          </padding>
+                  </VBox>
+                      <VBox prefHeight="27.0" prefWidth="748.0">
+                          <children>
+                              <Label text="Descripcion">
+                                  <font>
+                                      <Font size="14.0" />
+                                  </font>
+                        </Label>
+                        <TextField fx:id="tfDescripcion" />
+                          </children>
+                          <padding>
+                              <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                          </padding>
+                  </VBox>
+                      <VBox prefHeight="30.0" prefWidth="748.0">
+                          <children>
+                              <Label text="Precio">
+                                  <font>
+                                      <Font size="14.0" />
+                                  </font>
+                        </Label>
+                              <TextField fx:id="tfPrecio" />
+                          </children>
+                          <padding>
+                              <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                          </padding>
+                  </VBox>
+                      <VBox prefHeight="39.0" prefWidth="748.0">
+                          <children>
+                              <Label text="Gastos de envio">
+                                  <font>
+                                      <Font size="14.0" />
+                                  </font>
+                        </Label>
+                              <TextField fx:id="tfGastosEnvio" />
+                          </children>
+                          <padding>
+                              <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                          </padding>
+                  </VBox>
+                      <VBox prefHeight="23.0" prefWidth="748.0">
+                          <children>
+                              <Label text="Tiempo de preparacion">
+                                  <font>
+                                      <Font size="14.0" />
+                                  </font>
+                              </Label>
+                              <TextField fx:id="tfTiempoPrep" />
+                          </children>
+                          <padding>
+                              <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                          </padding>
+                  </VBox>
+               </children>
+            </VBox>
+                <GridPane alignment="CENTER" prefHeight="50.0" prefWidth="748.0" VBox.vgrow="NEVER">
+                    <columnConstraints>
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                    </columnConstraints>
+                    <rowConstraints>
+                        <RowConstraints vgrow="SOMETIMES" />
+                    </rowConstraints>
+                    <children>
+                        <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="10.0" GridPane.columnIndex="1">
+                            <children>
+                                <Button fx:id="btnCancel" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#OnCancelar" text="Cancelar" HBox.hgrow="ALWAYS" />
+                                <Button fx:id="btnAceptar" disable="true" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#OnAceptar" text="Aceptar" HBox.hgrow="ALWAYS" />
+                            </children>
+                        </HBox>
+                    </children>
+                </GridPane>
+         </children>
+      </VBox>
+    </children>
+</AnchorPane>
