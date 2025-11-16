@@ -1,16 +1,23 @@
 package MEDT.MEDT.vista;
 
 import MEDT.MEDT.controlador.Controlador;
+import MEDT.MEDT.modelo.Articulo;
 import MEDT.MEDT.modelo.Cliente;
 import MEDT.MEDT.modelo.Pedido;
+import MEDT.MEDT.modelo.excepciones.ArticuloNoEncontradoException; // Importamos
+import MEDT.MEDT.modelo.excepciones.PedidoNoCancelableException; // Importamos
 
-import java.util.Collection;
+import java.util.List; // Importamos List
 import java.util.Scanner;
-
 
 public class Vista {
     private final Scanner sc = new Scanner(System.in);
-    private final Controlador controlador = new Controlador();
+    private final Controlador controlador; // 1. Solo lo declaramos
+
+    // 2. Creamos un constructor para recibirlo desde Main.java
+    public Vista(Controlador controlador) {
+        this.controlador = controlador;
+    }
 
     public void menu() {
         int opcion;
@@ -21,7 +28,12 @@ public class Vista {
             System.out.println("3. Gestión de Pedidos");
             System.out.println("0. Salir");
             System.out.print("Elige una opción: ");
-            opcion = Integer.parseInt(sc.nextLine());
+
+            try {
+                opcion = Integer.parseInt(sc.nextLine());
+            } catch (NumberFormatException e) {
+                opcion = -1; // Opción inválida
+            }
 
             switch (opcion) {
                 case 1 -> menuArticulos();
@@ -37,38 +49,67 @@ public class Vista {
         System.out.println("1. Añadir Artículo");
         System.out.println("2. Mostrar Artículos");
         System.out.print("Elige opción: ");
-        int opcion = Integer.parseInt(sc.nextLine());
+        int opcion = 0;
+        try {
+            opcion = Integer.parseInt(sc.nextLine());
+        } catch (NumberFormatException e) {
+            System.out.println("Opción no válida.");
+            return;
+        }
 
         switch (opcion) {
             case 1 -> {
-                System.out.print("Codigo: ");
-                String codigo = sc.nextLine();
-                System.out.print("Descripción: ");
-                String descripcion = sc.nextLine();
-                System.out.print("Precio: ");
-                double precio = Double.parseDouble(sc.nextLine());
-                System.out.print("Tiempo de preparación (min): ");
-                double gastosEnvio = Double.parseDouble(sc.nextLine());
-                System.out.print("Gastos de envío: ");
-                int tiempoPrep = Integer.parseInt(sc.nextLine());
-                controlador.addArticulo(codigo, descripcion, precio, gastosEnvio, tiempoPrep);
-                System.out.println("Artículo añadido correctamente.");
+                try {
+                    System.out.print("Codigo: ");
+                    String codigo = sc.nextLine();
+                    System.out.print("Descripción: ");
+                    String descripcion = sc.nextLine();
+                    System.out.print("Precio: ");
+                    double precio = Double.parseDouble(sc.nextLine());
+
+                    // === CORRECCIÓN DE PROMPTS ===
+                    System.out.print("Gastos de envío: ");
+                    double gastosEnvio = Double.parseDouble(sc.nextLine());
+                    System.out.print("Tiempo de preparación (min): ");
+                    int tiempoPrep = Integer.parseInt(sc.nextLine());
+
+                    if (controlador.addArticulo(codigo, descripcion, precio, gastosEnvio, tiempoPrep)) {
+                        System.out.println("Artículo añadido correctamente.");
+                    } else {
+                        System.out.println("Error: El artículo ya existe.");
+                    }
+                } catch (NumberFormatException e) {
+                    System.out.println("Error: Formato de número incorrecto.");
+                }
             }
-            case 2 -> controlador.getArticulos().forEach(System.out::println);
+            case 2 -> {
+                List<Articulo> articulos = controlador.getArticulos();
+                if (articulos.isEmpty()) {
+                    System.out.println("No hay artículos registrados.");
+                } else {
+                    articulos.forEach(System.out::println);
+                }
+            }
+            default -> System.out.println("Opción no válida.");
         }
     }
 
     private void menuClientes() {
-        // similar a artículos (añadir, mostrar, etc.)
         System.out.println("--- GESTION DE CLIENTES ---");
         System.out.println("1. Añadir Clientes");
         System.out.println("2. Mostrar Clientes");
         System.out.println("3. Mostrar Clientes Estándar");
         System.out.println("4. Mostrar Clientes Premium");
         System.out.print("Elige opción: ");
-        int opcion = Integer.parseInt(sc.nextLine());
+        int opcion = 0;
+        try {
+            opcion = Integer.parseInt(sc.nextLine());
+        } catch (NumberFormatException e) {
+            System.out.println("Opción no válida.");
+            return;
+        }
 
-        Collection<Cliente> listaClientes;
+        List<Cliente> listaClientes;
 
         switch (opcion) {
             case 1 -> {
@@ -81,16 +122,21 @@ public class Vista {
                 System.out.print("Email: ");
                 String email = sc.nextLine();
 
-                // TENGO DUDAS
                 System.out.print("Tipo de cliente: (E)stándar / (P)remium: ");
                 String tipoCliente = sc.nextLine().trim().toUpperCase();
 
                 if (tipoCliente.equals("E")) {
-                    controlador.addClienteEstandar(nombre, domicilio, nif, email);
-                    System.out.println("Cliente Estándar añadido correctamente.");
+                    if (controlador.addClienteEstandar(nombre, domicilio, nif, email)) {
+                        System.out.println("Cliente Estándar añadido correctamente.");
+                    } else {
+                        System.out.println("Error: El NIF o Email ya existen.");
+                    }
                 } else if (tipoCliente.equals("P")) {
-                    controlador.addClientePremium(nombre, domicilio, nif, email);
-                    System.out.println("Cliente Premium añadido correctamente.");
+                    if (controlador.addClientePremium(nombre, domicilio, nif, email)) {
+                        System.out.println("Cliente Premium añadido correctamente.");
+                    } else {
+                        System.out.println("Error: El NIF o Email ya existen.");
+                    }
                 } else {
                     System.out.println("Tipo de cliente no válido. No se añadieron clientes. Repita el proceso.");
                 }
@@ -103,7 +149,6 @@ public class Vista {
                     listaClientes.forEach(System.out::println);
                 }
             }
-                    //controlador. getClientes().forEach(System.out::println);
             case 3 -> {
                 listaClientes = controlador.getClientesEstandar();
                 if (listaClientes.isEmpty()) {
@@ -121,16 +166,16 @@ public class Vista {
                     listaClientes.forEach(System.out::println);
                 }
             }
+            default -> System.out.println("Opción no válida.");
         }
     }
 
     private void menuPedidos() {
-        // opciones 3.1 a 3.4 según enunciado
         System.out.println("--- GESTION DE PEDIDOS ---");
         System.out.println("1. Añadir Pedido");
         System.out.println("2. Eliminar Pedido");
-        System.out.println("3. Mostrar Pedidos pendientes de envío (con opción de filtrado por cliente)");
-        System.out.println("4. Mostrar Pedidos enviados (con opción de filtrado por cliente)");
+        System.out.println("3. Mostrar Pedidos pendientes de envío");
+        System.out.println("4. Mostrar Pedidos enviados");
         System.out.print("Elige opción: ");
 
         try {
@@ -168,17 +213,24 @@ public class Vista {
         }
 
         try {
+            // Llamamos al nuevo método del controlador
             controlador.addPedido(emailCliente, codigoArticulo, cantidad);
             System.out.println("Pedido añadido correctamente.");
+
+            // === CORRECCIÓN DEL ERROR TIPOGRÁFICO ===
+        } catch (ArticuloNoEncontradoException e) {
+            System.out.println("ERROR: " + e.getMessage());
+
         } catch (IllegalArgumentException e) {
             if (e.getMessage().contains("Cliente no existe")) {
                 System.out.println("Cliente no encontrado. Se solicitarán datos para añadirlo.");
-                addClienteAux(emailCliente);
+                addClienteAux(emailCliente); // Se crea el cliente
 
                 try {
+                    // Reintentamos añadir el pedido
                     controlador.addPedido(emailCliente, codigoArticulo, cantidad);
                     System.out.println("Cliente creado y pedido añadido exitosamente.");
-                } catch (IllegalArgumentException ex) {
+                } catch (IllegalArgumentException | ArticuloNoEncontradoException ex) {
                     System.out.println("ERROR al reintentar pedido: " + ex.getMessage());
                 }
             } else {
@@ -192,13 +244,15 @@ public class Vista {
         try {
             int numPedido = Integer.parseInt(sc.nextLine());
 
-            if (controlador.eliminarPedido(numPedido)) {
-                System.out.println("Pedido " + numPedido + " eliminado correctamente.");
-            } else {
-                System.out.println("ERROR: El pedido no existe o ya fue enviado y no puede ser cancelado.");
-            }
+            // === CORRECCIÓN TRY-CATCH ===
+            controlador.eliminarPedido(numPedido);
+            System.out.println("Pedido " + numPedido + " eliminado correctamente.");
+
         } catch (NumberFormatException e) {
             System.out.println("ERROR: Introduzca el número de pedido entero.");
+        } catch (IllegalArgumentException | PedidoNoCancelableException e) {
+            // Capturamos los errores que puede lanzar el controlador
+            System.out.println("ERROR: " + e.getMessage());
         }
     }
 
@@ -207,7 +261,7 @@ public class Vista {
         System.out.print("Email del cliente para filtrar (Dejar vacío para ver todos los " + tipo + "): ");
         String emailFiltro = sc.nextLine().trim();
 
-        Collection<Pedido> pedidos;
+        List<Pedido> pedidos;
         if (esEnviado) {
             pedidos = controlador.getPedidosEnviados(emailFiltro);
         } else {
@@ -228,17 +282,23 @@ public class Vista {
         System.out.print("Domicilio: ");
         String domicilio = sc.nextLine();
         System.out.print("NIF: ");
-        String nif = sc.nextLine();
+        String nIF = sc.nextLine();
 
         System.out.print("Tipo de cliente: (E)standar / (P)remium: ");
         String tipoCliente = sc.nextLine().trim().toUpperCase();
 
         if (tipoCliente.equals("E")) {
-            controlador.addClienteEstandar(nombre, domicilio, nif, email);
-            System.out.println("Cliente Estandar con email: " + email + " añadido.");
+            if(controlador.addClienteEstandar(nombre, domicilio, nIF, email)) {
+                System.out.println("Cliente Estandar con email: " + email + " añadido.");
+            } else {
+                System.out.println("Error: El NIF ya existe. No se pudo crear el cliente.");
+            }
         } else if (tipoCliente.equals("P")) {
-            controlador.addClientePremium(nombre, domicilio, nif, email);
-            System.out.println("Cliente Premium con email: " + email + " añadido.");
+            if(controlador.addClientePremium(nombre, domicilio, nIF, email)) {
+                System.out.println("Cliente Premium con email: " + email + " añadido.");
+            } else {
+                System.out.println("Error: El NIF ya existe. No se pudo crear el cliente.");
+            }
         } else {
             System.out.println("Tipo de cliente no valido. No se añadio el cliente. Reintente la operación.");
         }
