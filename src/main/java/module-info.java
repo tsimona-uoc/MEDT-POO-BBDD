@@ -15,6 +15,7 @@ module MEDT {
     opens MEDT.MEDT.vista.Articulo.Operaciones to javafx.base, javafx.fxml;
     opens MEDT.MEDT.vista.Cliente to javafx.base, javafx.fxml;
     opens MEDT.MEDT.vista.Cliente.Operaciones to javafx.base, javafx.fxml;
+    opens MEDT.MEDT.vista.Cliente.Modals;
 
     exports MEDT;
     exports MEDT.MEDT.vista;
@@ -23,6 +24,8 @@ module MEDT {
 
     exports MEDT.MEDT.vista.Cliente;
     exports MEDT.MEDT.vista.Cliente.Operaciones;
+
+    exports MEDT.MEDT.vista.Cliente.Modals;
 
     exports MEDT.MEDT.modelo;
 }

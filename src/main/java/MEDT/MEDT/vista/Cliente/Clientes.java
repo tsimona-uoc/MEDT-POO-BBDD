@@ -13,9 +13,13 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseButton;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.util.List;
@@ -26,6 +30,9 @@ public class Clientes {
     /// Componentes
     @FXML
     private TableView<Cliente> tablaClientes;
+
+    @FXML
+    private Button btnFilter;
 
     @FXML
     private Button btnReload;
@@ -78,7 +85,9 @@ public class Clientes {
 
         /// Bind enable state of the "delete" button to be only active is selection is not empty
         btnDelete.disableProperty().bind(tablaClientes.getSelectionModel().selectedItemProperty().isNull());
+
         btnReload.disableProperty().bind(operacionesClientes.getSelectionModel().selectedItemProperty().isNotEqualTo(tabDatosClientes));
+        btnFilter.disableProperty().bind(operacionesClientes.getSelectionModel().selectedItemProperty().isNotEqualTo(tabDatosClientes));
 
         /// Initialize operation counter
         this.addOperationCounter = 0;
@@ -197,6 +206,35 @@ public class Clientes {
             operacionesClientes.getSelectionModel().select(editarClienteTab);
         } catch (IOException e) {
             throw new RuntimeException(e);
+        }
+    }
+
+    public void OnFiltrarClientes(){
+        try {
+            // 1. Cargar el FXML
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/views/Clientes/Modals/FilterClients.fxml"));
+            Parent root = loader.load();
+
+            // 2. Crear el Stage
+            Stage modalStage = new Stage();
+            modalStage.setTitle("Mi Modal");
+
+            // 3. Configurar como modal (bloquea la ventana padre)
+            modalStage.initModality(Modality.APPLICATION_MODAL);
+
+            // 4. Asignar la escena
+            Scene scene = new Scene(root);
+            modalStage.setScene(scene);
+
+            // 5. Mostrar el modal y esperar a que se cierre
+            modalStage.showAndWait();
+
+            // Opcional: obtener datos del controlador del modal
+            // ModalController controller = loader.getController();
+            // controller.getResultado();
+
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 }
