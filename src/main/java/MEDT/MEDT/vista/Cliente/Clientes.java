@@ -7,8 +7,12 @@ import MEDT.MEDT.modelo.Cliente;
 import MEDT.MEDT.modelo.ClienteEstandar;
 import MEDT.MEDT.modelo.ClientePremium;
 import MEDT.MEDT.vista.Articulo.Operaciones.EditarArticulo;
+import MEDT.MEDT.vista.Cliente.Modals.FilterClients;
 import MEDT.MEDT.vista.Cliente.Operaciones.EditarCliente;
 import MEDT.MEDT.vista.Eventos.TabCloseEvent;
+import javafx.beans.binding.Bindings;
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -24,10 +28,15 @@ import javafx.stage.Stage;
 import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 public class Clientes {
 
     /// Componentes
+
+    @FXML
+    private Label filterLabel;
+
     @FXML
     private TableView<Cliente> tablaClientes;
 
@@ -55,11 +64,14 @@ public class Clientes {
     @FXML
     private TabPane operacionesClientes;
 
-    /// Controlador clientes
+    /// Controlador cliente
     private IControladorClientes controladorClientes;
 
     /// Store the operation counter to assign tab name
     private int addOperationCounter;
+
+    /// Filter data
+    public ObjectProperty<FilterClients.Data> filterData;
 
     @FXML
     private void initialize(){
@@ -107,6 +119,14 @@ public class Clientes {
             }
         });
 
+        this.filterData = new SimpleObjectProperty<>();
+
+        this.filterLabel.textProperty().bind(
+                Bindings.when(this.filterData.isNull())
+                        .then("")
+                        .otherwise("(filtro activado)")
+        );
+
         this.OnCargarClientes();
     }
 
@@ -114,6 +134,11 @@ public class Clientes {
     @FXML
     public void OnCargarClientes(){
         List<Cliente> clientes = this.controladorClientes.getClientes();
+
+        if (!this.filterData.isNull().get()){
+            clientes = this.aplicarFiltros(clientes, this.filterData.get());
+        }
+
         ObservableList<Cliente> items = tablaClientes.getItems();
         /// Limpiar articulos
         items.clear();
@@ -188,7 +213,7 @@ public class Clientes {
             }
 
             /// Create a new tab
-            Tab editarClienteTab = new Tab("Editar cliente " + cliente.getNombre() + " - " +  cliente.getNombre());
+            Tab editarClienteTab = new Tab("Editar cliente " + cliente.getNif() + " - " +  cliente.getNombre());
             editarClienteTab.setClosable(true);
 
             /// Load the add item content fxml and sets as content
@@ -217,7 +242,8 @@ public class Clientes {
 
             // 2. Crear el Stage
             Stage modalStage = new Stage();
-            modalStage.setTitle("Mi Modal");
+            modalStage.setTitle("Filtrar clientes");
+            modalStage.setResizable(false);
 
             // 3. Configurar como modal (bloquea la ventana padre)
             modalStage.initModality(Modality.APPLICATION_MODAL);
@@ -226,15 +252,46 @@ public class Clientes {
             Scene scene = new Scene(root);
             modalStage.setScene(scene);
 
-            // 5. Mostrar el modal y esperar a que se cierre
+            // 5. Asignar filtro existente
+            FilterClients controller = loader.getController();
+            controller.setFilterData(this.filterData.get());
+
+            // 6. Mostrar el modal y esperar a que se cierre
             modalStage.showAndWait();
 
-            // Opcional: obtener datos del controlador del modal
-            // ModalController controller = loader.getController();
-            // controller.getResultado();
+            // 7. Recuperar datos de filtro
+            this.filterData.set(controller.getFilterData());
 
+            // 8. Recargar datos
+            this.OnCargarClientes();
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    private List<Cliente> aplicarFiltros(List<Cliente> clientes, FilterClients.Data filters){
+        Stream<Cliente> stream = clientes.stream();
+
+        if (filters.tipoCliente.equals("premium") || filters.tipoCliente.equals("estandar")){
+            stream = stream.filter(cliente -> filters.tipoCliente.equals("premium") ? cliente instanceof ClientePremium : cliente instanceof ClienteEstandar);
+        }
+
+        if (!filters.nif.isEmpty()){
+            stream = stream.filter(cliente -> cliente.getNif().toUpperCase().contains(filters.nif.toUpperCase()));
+        }
+
+        if (!filters.nombre.isEmpty()){
+            stream = stream.filter(cliente -> cliente.getNombre().toUpperCase().contains(filters.nombre.toUpperCase()));
+        }
+
+        if (!filters.domicilio.isEmpty()){
+            stream = stream.filter(cliente -> cliente.getDomicilio().toUpperCase().contains(filters.domicilio.toUpperCase()));
+        }
+
+        if (!filters.email.isEmpty()){
+            stream = stream.filter(cliente -> cliente.getEmail().toUpperCase().contains(filters.email.toUpperCase()));
+        }
+
+        return stream.toList();
     }
 }
