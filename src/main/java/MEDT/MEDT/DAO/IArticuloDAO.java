@@ -17,4 +17,6 @@ public interface IArticuloDAO {
     public Articulo findByCodigo(String codigo) throws SQLException;
     /// Returns a list of all items
     public Collection<Articulo> findAll() throws SQLException;
+
+    void insertar(Articulo articulo);
 }
