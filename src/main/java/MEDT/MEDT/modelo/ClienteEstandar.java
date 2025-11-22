@@ -1,5 +1,11 @@
 package MEDT.MEDT.modelo;
 
+import jakarta.persistence.DiscriminatorValue;
+import jakarta.persistence.Entity;
+
+
+@Entity
+@DiscriminatorValue("estandar")
 public class ClienteEstandar extends Cliente {
 
     //Constructor
@@ -7,6 +13,9 @@ public class ClienteEstandar extends Cliente {
         super(nombre, domicilio, nif, email);
     }
 
+    public ClienteEstandar() {
+
+    }
 
     @Override
     public double calcularDescuento(){

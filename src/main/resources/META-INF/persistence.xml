@@ -10,6 +10,15 @@
         <!-- El nombre completo de tu clase Articulo -->
         <class>MEDT.MEDT.modelo.Articulo</class>
 
+        <!-- El nombre completo de tu clase Cliente -->
+        <class>MEDT.MEDT.modelo.Cliente</class>
+        <class>MEDT.MEDT.modelo.ClienteEstandar</class>
+        <class>MEDT.MEDT.modelo.ClientePremium</class>
+
+        <!-- El nombre completo de tu clase Pedido -->
+        <class>MEDT.MEDT.modelo.Pedido</class>
+
+
         <properties>
             <!-- Configuración de la conexión a la base de datos -->
             <property name="jakarta.persistence.jdbc.driver" value="com.mysql.cj.jdbc.Driver"/>
