@@ -1,11 +1,12 @@
 package MEDT.MEDT.modelo;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name = "articulos")
+@Table(name = "articulo")
 public class Articulo {
 
     @Id
@@ -13,6 +14,8 @@ public class Articulo {
     private String descripcion;
     private double precio;
     private double gastosEnvio;
+
+    @Column(name = "tiempoPreparacion")
     private int tiempoPrep;
 
     public Articulo() {
