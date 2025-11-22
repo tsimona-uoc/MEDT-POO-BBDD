@@ -18,7 +18,7 @@ public abstract class Cliente {
     private String tipo;
 
     // Asociación con Pedido
-    @Transient
+    @OneToMany(mappedBy = "cliente")
     private List<Pedido> pedidos = new ArrayList<>();
 
     //Constructor

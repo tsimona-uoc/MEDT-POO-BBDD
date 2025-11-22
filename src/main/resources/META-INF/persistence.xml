@@ -7,7 +7,7 @@
     <persistence-unit name="MEDT-persistence-unit" transaction-type="RESOURCE_LOCAL">
         <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
         
-        <!-- El nombre completo de tu clase Articulo -->
+        <!-- El nombre completo de tu clase Artículo -->
         <class>MEDT.MEDT.modelo.Articulo</class>
 
         <!-- El nombre completo de tu clase Cliente -->

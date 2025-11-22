@@ -16,7 +16,7 @@ public class Main {
         /// Register types
         MEDTFactory.registerType(IArticuloDAO.class, new ArticuloDAOJPA());
         MEDTFactory.registerType(IClienteDAO.class, new ClienteDAOJPA());
-        MEDTFactory.registerType(IPedidoDAO.class, new PedidoDAOjdbc(MEDTFactory.resolve(IArticuloDAO.class), MEDTFactory.resolve(IClienteDAO.class)));
+        MEDTFactory.registerType(IPedidoDAO.class, new PedidoDAOJPA(MEDTFactory.resolve(IArticuloDAO.class), MEDTFactory.resolve(IClienteDAO.class)));
 
         /// Create controllers
         ControladorArticulos ca = new ControladorArticulos(MEDTFactory.resolve(IArticuloDAO.class));

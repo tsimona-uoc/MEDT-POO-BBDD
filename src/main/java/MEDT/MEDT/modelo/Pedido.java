@@ -1,16 +1,25 @@
 package MEDT.MEDT.modelo;
 
 import java.time.LocalDateTime;
+import jakarta.persistence.*;
+import MEDT.MEDT.modelo.Articulo;
+@Entity
+@Table(name = "pedido")
 
 public class Pedido {
+    @Id
     private int numPedido;
     private LocalDateTime fechaHora;
     private int cantidad;
 
     // Asociación con Articulo
+    @ManyToOne
+    @JoinColumn(name = "codigoArticulo")
     private Articulo articulo;
 
     //Asosiación con Cliente
+    @ManyToOne
+    @JoinColumn(name = "nifCliente")
     private Cliente cliente;
 
     public Pedido (int numPedido, int cantidad, LocalDateTime fechaHora, Articulo articulo, Cliente cliente){
@@ -20,6 +29,11 @@ public class Pedido {
         this.articulo = articulo;
         this.cliente = cliente;
     }
+
+    public Pedido() {
+    }
+
+    // Getters y Setters
 
     public int getNumPedido() {
         return numPedido;

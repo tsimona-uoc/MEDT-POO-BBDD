@@ -4,7 +4,6 @@ import MEDT.MEDT.modelo.*;
 import MEDT.MEDT.modelo.excepciones.TipoClienteInvalidoException;
 
 import java.sql.*;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
