@@ -1,25 +1,22 @@
 package MEDT.MEDT.DAO;
 
 import MEDT.MEDT.modelo.Articulo;
-import MEDT.MEDT.modelo.excepciones.ArticuloNoEncontradoException;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityTransaction;
+import jakarta.persistence.TypedQuery;
 
-import java.util.List;
+import java.sql.SQLException;
+import java.util.Collection;
 
 public class ArticuloDAOJPA implements IArticuloDAO {
 
     @Override
     public void insert(Articulo articulo) {
-        // 1. Obtener un EntityManager
         EntityManager em = JPAUtil.getEntityManagerFactory().createEntityManager();
-        // 2. Iniciar una transacción
         EntityTransaction tx = em.getTransaction();
         try {
             tx.begin();
-            // 3. Usar el metodo persist() para guardar el objeto
             em.persist(articulo);
-            // 4. Confirmar la transacción
             tx.commit();
         } catch (Exception e) {
             if (tx.isActive()) {
@@ -27,7 +24,6 @@ public class ArticuloDAOJPA implements IArticuloDAO {
             }
             e.printStackTrace();
         } finally {
-            // 5. Cerrar el EntityManager
             em.close();
         }
     }
@@ -51,8 +47,7 @@ public class ArticuloDAOJPA implements IArticuloDAO {
     }
 
     @Override
-    public void eliminar(String codigo) {
-        // Lógica con JPA para eliminar
+    public void delete(String codigo) {
         EntityManager em = JPAUtil.getEntityManagerFactory().createEntityManager();
         EntityTransaction tx = em.getTransaction();
         try {
@@ -69,17 +64,28 @@ public class ArticuloDAOJPA implements IArticuloDAO {
             e.printStackTrace();
         } finally {
             em.close();
-        }    }
-
-    @Override
-    public Articulo buscar(String codigo) throws ArticuloNoEncontradoException {
-        // Lógica con JPA para buscar
-        return null;
+        }
     }
 
     @Override
-    public List<Articulo> obtenerTodos() {
-        // Lógica con JPA para obtener todos
-        return null;
+    public Articulo findByCodigo(String codigo) {
+        EntityManager em = JPAUtil.getEntityManagerFactory().createEntityManager();
+        try {
+            return em.find(Articulo.class, codigo);
+
+        } finally {
+            em.close();
+        }
+    }
+
+    @Override
+    public Collection<Articulo> findAll() { 
+        EntityManager em = JPAUtil.getEntityManagerFactory().createEntityManager();
+        try {
+            TypedQuery<Articulo> query = em.createQuery("SELECT a FROM Articulo a", Articulo.class);
+            return query.getResultList();
+        } finally {
+            em.close();
+        }
     }
 }

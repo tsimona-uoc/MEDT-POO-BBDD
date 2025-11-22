@@ -18,5 +18,4 @@ public interface IArticuloDAO {
     /// Returns a list of all items
     public Collection<Articulo> findAll() throws SQLException;
 
-    void insertar(Articulo articulo);
 }
