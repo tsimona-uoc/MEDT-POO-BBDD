@@ -16,11 +16,6 @@ public class PedidoDAOJPA implements IPedidoDAO{
         this.emf = JPAUtil.getEntityManagerFactory();
     }
 
-    public PedidoDAOJPA(IArticuloDAO articuloDAO, IClienteDAO clienteDAO, EntityManagerFactory emf) {
-        this.emf = emf;
-    }
-
-
 
     @Override
     public void insert(Pedido pedido) throws SQLException {
@@ -111,15 +106,28 @@ public class PedidoDAOJPA implements IPedidoDAO{
     public List<Pedido> findPedidosEnviados(String nif) throws SQLException {
         EntityManager em = emf.createEntityManager();
         try {
-            // Usamos una consulta SQL nativa para aprovechar las funciones de fecha de MySQL.
-            // El segundo argumento, Pedido.class, le dice a JPA que mapee los resultados a objetos Pedido.
-            String sql = "SELECT p.* FROM pedido p " +
-                    "JOIN articulo a ON p.codigoArticulo = a.codigo " +
-                    "WHERE p.nifCliente = :nif AND NOW() >= DATE_ADD(p.fechaHora, INTERVAL a.tiempoPreparacion MINUTE)";
+            // 1. Empezamos con la consulta base que define un pedido "enviado"
+            StringBuilder sql = new StringBuilder(
+                    "SELECT p.* FROM pedido p " +
+                            "JOIN articulo a ON p.codigoArticulo = a.codigo " +
+                            "WHERE NOW() >= DATE_ADD(p.fechaHora, INTERVAL a.tiempoPreparacion MINUTE)"
+            );
 
-            return em.createNativeQuery(sql, Pedido.class)
-                    .setParameter("nif", nif)
-                    .getResultList();
+            // 2. Si se proporciona un NIF válido, añadimos el filtro
+            boolean hasNif = nif != null && !nif.trim().isEmpty();
+            if (hasNif) {
+                sql.append(" AND p.nifCliente = :nif");
+            }
+
+            // 3. Creamos la consulta nativa a partir del SQL construido
+            jakarta.persistence.Query query = em.createNativeQuery(sql.toString(), Pedido.class);
+
+            // 4. Si añadimos el filtro, ahora establecemos el valor del parámetro
+            if (hasNif) {
+                query.setParameter("nif", nif);
+            }
+
+            return query.getResultList();
         } finally {
             em.close();
         }
@@ -129,13 +137,28 @@ public class PedidoDAOJPA implements IPedidoDAO{
     public List<Pedido> findPedidosPendientes(String nif) throws SQLException {
         EntityManager em = emf.createEntityManager();
         try {
-            String sql = "SELECT p.* FROM pedido p " +
-                    "JOIN articulo a ON p.codigoArticulo = a.codigo " +
-                    "WHERE p.nifCliente = :nif AND NOW() < DATE_ADD(p.fechaHora, INTERVAL a.tiempoPreparacion MINUTE)";
+            // 1. Consulta base para pedidos "pendientes"
+            StringBuilder sql = new StringBuilder(
+                    "SELECT p.* FROM pedido p " +
+                            "JOIN articulo a ON p.codigoArticulo = a.codigo " +
+                            "WHERE NOW() < DATE_ADD(p.fechaHora, INTERVAL a.tiempoPreparacion MINUTE)"
+            );
 
-            return em.createNativeQuery(sql, Pedido.class)
-                    .setParameter("nif", nif)
-                    .getResultList();
+            // 2. Añadir filtro de NIF si existe
+            boolean hasNif = nif != null && !nif.trim().isEmpty();
+            if (hasNif) {
+                sql.append(" AND p.nifCliente = :nif");
+            }
+
+            // 3. Crear la consulta
+            jakarta.persistence.Query query = em.createNativeQuery(sql.toString(), Pedido.class);
+
+            // 4. Setear el parámetro si es necesario
+            if (hasNif) {
+                query.setParameter("nif", nif);
+            }
+
+            return query.getResultList();
         } finally {
             em.close();
         }

@@ -8,6 +8,7 @@ import MEDT.MEDT.modelo.Articulo;
 
 public class Pedido {
     @Id
+    @Column(name = "numeroPedido")
     private int numPedido;
     private LocalDateTime fechaHora;
     private int cantidad;
