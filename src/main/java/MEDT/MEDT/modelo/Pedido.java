@@ -1,17 +1,38 @@
 package MEDT.MEDT.modelo;
 
+import jakarta.persistence.*;
+import jakarta.persistence.GeneratedValue;
+
 import java.time.LocalDateTime;
 
+
+
+@Entity
+@Table(name = "Pedido")
 public class Pedido {
+
+    @Id
+// Si se quiere generar el número automáticamente: @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "numeroPedido")
     private int numPedido;
+
+    @Column(name = "fechaHora", nullable = false)
     private LocalDateTime fechaHora;
+
+    @Column(name = "cantidad", nullable = false)
     private int cantidad;
 
+    @ManyToOne
+    @JoinColumn(name = "codigoArticulo", nullable = false)
     // Asociación con Articulo
     private Articulo articulo;
 
+    @ManyToOne
+    @JoinColumn(name = "nifCliente", nullable = false)
     //Asosiación con Cliente
     private Cliente cliente;
+
+    public Pedido() {}
 
     public Pedido (int numPedido, int cantidad, LocalDateTime fechaHora, Articulo articulo, Cliente cliente){
         this.numPedido = numPedido;

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<persistence xmlns="https://jakarta.ee/xml/ns/persistence"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             version="3.0">
+
+    <persistence-unit name="MEDT_PU" transaction-type="RESOURCE_LOCAL">
+        <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
+
+        <!--Indicar al JPA que existen las clases-->
+        <class>MEDT.MEDT.modelo.Articulo</class>
+        <class>MEDT.MEDT.modelo.Pedido</class>
+        <class>MEDT.MEDT.modelo.ClienteEstandar</class>
+        <class>MEDT.MEDT.modelo.ClientePremium</class>
+        <properties>
+            <!-- MySQL -->
+            <property name="jakarta.persistence.jdbc.driver"
+                      value="com.mysql.cj.jdbc.Driver"/>
+
+            <property name="jakarta.persistence.jdbc.url"
+                      value="jdbc:mysql://localhost:3306/MEDT_POO_DDBB?createDatabaseIfNotExist=true&amp;useSSL=false"/>
+
+            <property name="jakarta.persistence.jdbc.user" value="root"/>
+            <property name="jakarta.persistence.jdbc.password" value="19978"/>
+
+            <!-- Hibernate config -->
+            <property name="hibernate.dialect"
+                      value="org.hibernate.dialect.MySQLDialect"/>
+            <property name="hibernate.hbm2ddl.auto" value="update"/>
+            <property name="hibernate.show_sql" value="true"/>
+            <property name="hibernate.format_sql" value="true"/>
+        </properties>
+    </persistence-unit>
+
+</persistence>

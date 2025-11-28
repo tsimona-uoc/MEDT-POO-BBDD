@@ -1,17 +1,33 @@
 package MEDT.MEDT.modelo;
 
+
+import jakarta.persistence.*;
+
 import java.util.ArrayList;
 import java.util.List;
 
+@Entity
+@Table(name = "cliente")
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@DiscriminatorColumn(name = "tipo")
 public abstract class Cliente {
-    private String nombre;
-    private String domicilio;
+    @Id
+    @Column(name = "nif", nullable = false)
     private String nif;
+
+    @Column(name = "nombre", nullable = false)
+    private String nombre;
+
+    @Column(name = "domicilio", nullable = false)
+    private String domicilio;
+
+    @Column(name = "email", nullable = false)
     private String email;
 
+    @OneToMany(mappedBy = "cliente")
     // Asociación con Pedido
     private List<Pedido> pedidos = new ArrayList<>();
-
+    public Cliente() {}
     //Constructor
     public Cliente(String nombre, String domicilio, String nif, String email) {
         this.nombre = nombre;

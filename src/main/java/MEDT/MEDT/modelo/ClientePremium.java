@@ -1,9 +1,17 @@
 package MEDT.MEDT.modelo;
 
+import jakarta.persistence.DiscriminatorValue;
+import jakarta.persistence.Entity;
+
+@Entity
+@DiscriminatorValue("PREMIUM")
 public class ClientePremium extends Cliente {
     private static final double CUOTA = 30.0;
     private static final double DESCUENTO = 0.2;
 
+    public ClientePremium(){
+        super();
+    }
     public ClientePremium(String nombre, String domicilio, String nif, String email) {
         super(nombre, domicilio, nif, email);
     }

@@ -1,12 +1,32 @@
 package MEDT.MEDT.modelo;
 
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+
+@Entity
+@Table(name = "articulo")
 public class Articulo {
+
+    @Id
+    @Column(name = "codigo", nullable = false, length = 50)
     private String codigo;
+
+    @Column(name = "descripcion", nullable = false, length = 255)
     private String descripcion;
+
+    @Column(name = "precio", nullable = false)
     private double precio;
+
+    @Column(name = "gastos_envio", nullable = false)
     private double gastosEnvio;
+
+    @Column(name = "tiempoPrep", nullable = false)
     private int tiempoPrep;
 
+    public Articulo() {}
     public Articulo(String codigo, String descripcion, double precio, double gastosEnvio, int tiempoPrep){
         this.codigo = codigo;
         this.descripcion = descripcion;
