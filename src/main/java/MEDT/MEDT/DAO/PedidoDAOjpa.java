@@ -97,14 +97,21 @@ public class PedidoDAOjpa implements IPedidoDAO {
     public List<Pedido> findPedidosPendientes(String nif) throws SQLException {
         EntityManager em = getEntityManager();
         try {
-            List<Pedido> pedidos = em.createQuery(
-                            "SELECT p FROM Pedido p WHERE p.cliente.nif = :nif", Pedido.class)
-                    .setParameter("nif", nif)
-                    .getResultList();
+            List<Pedido> pedidos;
+
+            if (nif == null || nif.isBlank()) {
+                pedidos = em.createQuery("SELECT p FROM Pedido p", Pedido.class)
+                        .getResultList();
+            } else {
+                pedidos = em.createQuery(
+                                "SELECT p FROM Pedido p WHERE p.cliente.nif = :nif", Pedido.class)
+                        .setParameter("nif", nif)
+                        .getResultList();
+            }
             return pedidos.stream()
                     .filter(Pedido::esCancelable)
                     .toList();
-        } finally {
+        }finally{
             em.close();
         }
     }
@@ -113,15 +120,21 @@ public class PedidoDAOjpa implements IPedidoDAO {
     public List<Pedido> findPedidosEnviados(String nif) throws SQLException {
         EntityManager em = getEntityManager();
         try {
-            List<Pedido> pedidos = em.createQuery(
-                            "SELECT p FROM Pedido p WHERE p.cliente.nif = :nif", Pedido.class)
-                    .setParameter("nif", nif)
-                    .getResultList();
+            List<Pedido> pedidos;
+
+            if (nif == null || nif.isBlank()) {
+                pedidos = em.createQuery("SELECT p FROM Pedido p", Pedido.class)
+                        .getResultList();
+            } else {
+                pedidos = em.createQuery(
+                        "SELECT p FROM Pedido p WHERE p.cliente.nif = :nif", Pedido.class)
+                        .setParameter("nif", nif)
+                        .getResultList();
+            }
             return pedidos.stream()
                     .filter(p -> !p.esCancelable())
                     .toList();
-
-        } finally {
+        }finally{
             em.close();
         }
     }
