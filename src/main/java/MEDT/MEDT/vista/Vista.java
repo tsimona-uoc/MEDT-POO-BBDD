@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.Scanner;
 
 public class Vista {
+
     private final Scanner sc = new Scanner(System.in);
     private final ControladorPedidos controladorPedidos;
     private final ControladorArticulos controladorArticulos;
@@ -216,19 +217,6 @@ public class Vista {
 
             /// TODO: TRANSACCIÓN AGREGAR CLIENTE Y PEDIDO AL MISMO TIEMPO
             resultado = "";
-
-            /*
-            boolean ok = (tipo == 1)
-                    ? this.controladorClientes.addClienteEstandar(nombre, domicilio, nif, email)
-                    : this.controladorClientes.addClientePremium(nombre, domicilio, nif, email);
-            if (ok){
-                System.out.println("Cliente añadido correctamente.");
-            }
-            else{
-                System.out.println("Error: No se ha podido registrar el cliente.");
-                return;
-            }
-            */
             if (this.controladorPedidos.addPedidoYClienteAtomico(numPedido, cantidad, fecha, codigoArticulo, nif, nombre, domicilio, email, tipo)){
                 System.out.println("Pedido y cliente agregados correctamente.");
             }

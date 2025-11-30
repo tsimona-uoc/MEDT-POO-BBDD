@@ -1,18 +1,41 @@
 package MEDT.MEDT.modelo;
 
-public class Articulo {
-    private String codigo;
-    private String descripcion;
-    private double precio;
-    private double gastosEnvio;
-    private int tiempoPrep;
+import jakarta.persistence.*;
 
-    public Articulo(String codigo, String descripcion, double precio, double gastosEnvio, int tiempoPrep){
+import java.math.BigDecimal;
+import java.util.LinkedHashSet;
+import java.util.Set;
+
+@Entity
+@Table(name = "articulo", schema = "MEDT_POO_DDBB")
+public class Articulo {
+    @Id
+    @Column(name = "codigo", nullable = false, length = 200)
+    private String codigo;
+
+    @Column(name = "descripcion", nullable = false, length = 200)
+    private String descripcion;
+
+    @Column(name = "precio", nullable = false, precision = 10)
+    private BigDecimal precio;
+
+    @Column(name = "gastosEnvio", nullable = false, precision = 10)
+    private BigDecimal gastosEnvio;
+
+    @Column(name = "tiempoPreparacion", nullable = false)
+    private Integer tiempoPreparacion;
+
+    @OneToMany(mappedBy = "articulo")
+    private Set<Pedido> pedidos = new LinkedHashSet<>();
+
+    public Articulo() {}
+
+    public Articulo(String codigo, String descripcion, BigDecimal precio, BigDecimal gastosEnvio, Integer tiempoPreparacion) {
         this.codigo = codigo;
         this.descripcion = descripcion;
         this.precio = precio;
         this.gastosEnvio = gastosEnvio;
-        this.tiempoPrep = tiempoPrep;
+        this.tiempoPreparacion = tiempoPreparacion;
     }
 
     public String getCodigo() {
@@ -31,30 +54,37 @@ public class Articulo {
         this.descripcion = descripcion;
     }
 
-    public double getPrecio() {
+    public BigDecimal getPrecio() {
         return precio;
     }
 
-    public void setPrecio(double precio) {
+    public void setPrecio(BigDecimal precio) {
         this.precio = precio;
     }
 
-    public double getGastosEnvio() {
+    public BigDecimal getGastosEnvio() {
         return gastosEnvio;
     }
 
-    public void setGastosEnvio(double gastosEnvio) {
+    public void setGastosEnvio(BigDecimal gastosEnvio) {
         this.gastosEnvio = gastosEnvio;
     }
 
-    public int getTiempoPrep() {
-        return tiempoPrep;
+    public Integer getTiempoPreparacion() {
+        return tiempoPreparacion;
     }
 
-    public void setTiempoPrep(int tiempoPrep) {
-        this.tiempoPrep = tiempoPrep;
+    public void setTiempoPreparacion(Integer tiempoPreparacion) {
+        this.tiempoPreparacion = tiempoPreparacion;
     }
 
+    public Set<Pedido> getPedidos() {
+        return pedidos;
+    }
+
+    public void setPedidos(Set<Pedido> pedidos) {
+        this.pedidos = pedidos;
+    }
 
     @Override
     public String toString() {
@@ -63,7 +93,7 @@ public class Articulo {
                 ", descripción='" + descripcion + '\'' +
                 ", precio='" + precio + '\'' +
                 ", gastos de envío=" + gastosEnvio + '\'' +
-                ", tiempo de preparación=" + tiempoPrep +
+                ", tiempo de preparación=" + tiempoPreparacion +
                 '}';
     }
 }

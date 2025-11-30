@@ -1,18 +1,34 @@
 package MEDT.MEDT.modelo;
 
-import java.util.ArrayList;
-import java.util.List;
+import jakarta.persistence.*;
 
+import java.util.LinkedHashSet;
+import java.util.Set;
+
+@Entity
+@Table(name = "cliente", schema = "MEDT_POO_DDBB")
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@DiscriminatorColumn(name = "tipo")
 public abstract class Cliente {
-    private String nombre;
-    private String domicilio;
+    @Id
+    @Column(name = "nif", nullable = false, length = 20)
     private String nif;
+
+    @Column(name = "nombre", nullable = false, length = 200)
+    private String nombre;
+
+    @Column(name = "domicilio", nullable = false, length = 200)
+    private String domicilio;
+
+    @Column(name = "email", nullable = false, length = 200)
     private String email;
 
-    // Asociación con Pedido
-    private List<Pedido> pedidos = new ArrayList<>();
+    @OneToMany(mappedBy = "cliente")
+    private Set<Pedido> pedidos = new LinkedHashSet<>();
 
-    //Constructor
+    /// Required by JPA
+    public Cliente() {}
+
     public Cliente(String nombre, String domicilio, String nif, String email) {
         this.nombre = nombre;
         this.domicilio = domicilio;
@@ -20,7 +36,14 @@ public abstract class Cliente {
         this.email = email;
     }
 
-    // Getters y Setters
+    public String getNif() {
+        return nif;
+    }
+
+    public void setNif(String nif) {
+        this.nif = nif;
+    }
+
     public String getNombre() {
         return nombre;
     }
@@ -37,14 +60,6 @@ public abstract class Cliente {
         this.domicilio = domicilio;
     }
 
-    public String getNif() {
-        return nif;
-    }
-
-    public void setNif(String nif) {
-        this.nif = nif;
-    }
-
     public String getEmail() {
         return email;
     }
@@ -53,12 +68,14 @@ public abstract class Cliente {
         this.email = email;
     }
 
-    public List<Pedido> getPedidos() {
+    public Set<Pedido> getPedidos() {
         return pedidos;
     }
 
+    public void setPedidos(Set<Pedido> pedidos) {
+        this.pedidos = pedidos;
+    }
 
-    //Metodo abstracto
     public abstract double calcularDescuento();
 
     @Override
@@ -68,6 +85,7 @@ public abstract class Cliente {
                 ", domicilo='" + domicilio + '\'' +
                 ", nif='" + nif + '\'' +
                 ", email=" + email +
+                ", tipo=" + (this instanceof ClientePremium ? "premium" : "estandar")  +
                 '}';
     }
 }

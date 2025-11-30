@@ -1,121 +1,140 @@
 package MEDT.MEDT.controlador;
 
-import MEDT.MEDT.DAO.IArticuloDAO;
-import MEDT.MEDT.DAO.IClienteDAO;
-import MEDT.MEDT.DAO.IPedidoDAO;
 import MEDT.MEDT.modelo.*;
 import MEDT.MEDT.modelo.excepciones.PedidoNoCancelableException;
 
-import java.sql.SQLException;
-import java.time.Duration;
+import jakarta.persistence.*;
+
 import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.List;
-import java.util.Objects;
 
 public class ControladorPedidos {
 
-    /// Articulo DAO
-    private IArticuloDAO articuloDAO;
+    private final EntityManager em;
 
-    /// Pedido DAO
-    private IPedidoDAO pedidoDAO;
-
-    /// Cliente DAO
-    private IClienteDAO clienteDAO;
-
-    public ControladorPedidos(IArticuloDAO articuloDAO, IPedidoDAO pedidoDAO, IClienteDAO clienteDAO) {
-        this.articuloDAO = articuloDAO;
-        this.pedidoDAO = pedidoDAO;
-        this.clienteDAO = clienteDAO;
+    public ControladorPedidos(EntityManager em) {
+        this.em = em;
     }
 
+    /** Añade un pedido */
     public String addPedido(int numPedido, int cantidad, LocalDateTime fechaHora, String codigoArticulo, String nifCliente) {
+        EntityTransaction tx = em.getTransaction();
         try {
-            Articulo articulo = this.articuloDAO.findByCodigo(codigoArticulo);
-            Cliente cliente = this.clienteDAO.findByNIF(nifCliente);
+            Articulo articulo = em.find(Articulo.class, codigoArticulo);
+            if (articulo == null) return "Error: el artículo no existe.";
 
-            if (articulo == null)
-                return "Error: el artículo no existe.";
-            if (cliente == null)
-                return "Error: el cliente no existe. Debe crearlo antes de continuar.";
+            Cliente cliente = em.find(Cliente.class, nifCliente);
+            if (cliente == null) return "Error: el cliente no existe. Debe crearlo antes de continuar.";
 
-            Pedido pedido = new Pedido(numPedido, cantidad, fechaHora, articulo, cliente);
+            Pedido pedido = new Pedido(numPedido, fechaHora.toInstant(ZoneOffset.UTC), cantidad, articulo, cliente);
 
-            try {
-                this.pedidoDAO.insert(pedido);
-                return "Pedido añadido correctamente.";
-            }
-            catch (SQLException ex){
-                return "Error: el pedido no se pudo añadir (posible duplicado).";
-            }
+            tx.begin();
+            em.persist(pedido);
+            tx.commit();
+
+            return "Pedido añadido correctamente.";
+
         } catch (Exception e) {
-            return "Error inesperado al añadir pedido: " + e.getMessage();
+            if (tx.isActive()) tx.rollback();
+            return "Error: el pedido no se pudo añadir (" + e.getMessage() + ")";
         }
     }
 
+    /** Elimina un pedido si es cancelable */
     public boolean eliminarPedido(int numPedido) throws PedidoNoCancelableException {
-
+        EntityTransaction tx = em.getTransaction();
         try {
-            Pedido pedido = this.pedidoDAO.findByCode(numPedido);
-            if (pedido == null){
+            Pedido pedido = em.find(Pedido.class, numPedido);
+            if (pedido == null) {
                 throw new IllegalArgumentException("No existe ningún pedido con ese número.");
             }
-
-            if (!pedido.esCancelable()){
+            if (!pedido.esCancelable()) {
                 throw new PedidoNoCancelableException("No se puede eliminar el pedido.");
             }
 
-            this.pedidoDAO.delete(numPedido);
+            tx.begin();
+            em.remove(pedido);
+            tx.commit();
 
             return true;
 
+        } catch (Exception e) {
+            if (tx.isActive()) tx.rollback();
+            System.out.println("Error al eliminar el pedido: " + e.getMessage());
+            return false;
         }
-        catch (SQLException ex){
-            System.out.println("Error al eliminar el pedido: " + ex.getMessage());
-        }
-
-        return false;
     }
 
-
+    /** Devuelve los pedidos pendientes de un cliente */
     public List<Pedido> getPedidosPendientes(String nif) {
         try {
-            return this.pedidoDAO.findPedidosPendientes(nif);
+            StoredProcedureQuery query = em.createStoredProcedureQuery("obtenerPedidosPendientes", Pedido.class);
+
+            // Registrar el parámetro de entrada
+            query.registerStoredProcedureParameter(1, String.class, ParameterMode.IN);
+
+            // Pasar el parámetro
+            query.setParameter(1, (nif != null ? nif : ""));
+
+            // Ejecutar
+            return query.getResultList();
+
+        } catch (PersistenceException e) {
+            e.printStackTrace();
+            return null;
         }
-        catch (SQLException ex){
-            ex.printStackTrace();
-        }
-        return null;
     }
 
+    /** Devuelve los pedidos enviados de un cliente */
     public List<Pedido> getPedidosEnviados(String nif) {
         try {
-            return this.pedidoDAO.findPedidosEnviados(nif);
+            StoredProcedureQuery query = em.createStoredProcedureQuery("obtenerPedidosEnviados", Pedido.class);
+
+            // Registrar el parámetro de entrada
+            query.registerStoredProcedureParameter(1, String.class, ParameterMode.IN);
+
+            // Pasar el parámetro
+            query.setParameter(1, (nif != null ? nif : ""));
+
+            // Ejecutar
+            return query.getResultList();
+
+        } catch (PersistenceException e) {
+            e.printStackTrace();
+            return null;
         }
-        catch (SQLException ex){
-            ex.printStackTrace();
-        }
-        return null;
     }
 
-    public boolean addPedidoYClienteAtomico(int numeroPedido, int cantidad, LocalDateTime fechaHora, String codigoArticulo, String nif, String nombre, String domicilio, String email, int tipo) {
+    /** Añade un cliente y un pedido en la misma transacción */
+    public boolean addPedidoYClienteAtomico(int numeroPedido, int cantidad, LocalDateTime fechaHora,
+                                            String codigoArticulo, String nif, String nombre,
+                                            String domicilio, String email, int tipo) {
+        EntityTransaction tx = em.getTransaction();
         try {
-            Articulo articulo = this.articuloDAO.findByCodigo(codigoArticulo);
-            Cliente cliente = null;
+            Articulo articulo = em.find(Articulo.class, codigoArticulo);
+            if (articulo == null) return false;
 
-            if (tipo == 1){
-                cliente = new ClienteEstandar(nombre, domicilio, nif, email);
-            }
-            else{
-                cliente = new ClientePremium(nombre, domicilio, nif, email);
+            Cliente cliente;
+            if (tipo == 1) {
+                cliente = new ClienteEstandar(nif, nombre, domicilio, email);
+            } else {
+                cliente = new ClientePremium(nif, nombre, domicilio, email);
             }
 
-            Pedido pedido = new Pedido(numeroPedido, cantidad, fechaHora, articulo, cliente);
-            return this.pedidoDAO.addPedidoYClienteAtomico(pedido, cliente);
+            Pedido pedido = new Pedido(numeroPedido, fechaHora.toInstant(ZoneOffset.UTC), cantidad, articulo, cliente);
+
+            tx.begin();
+            em.persist(cliente);
+            em.persist(pedido);
+            tx.commit();
+
+            return true;
+
+        } catch (Exception e) {
+            if (tx.isActive()) tx.rollback();
+            e.printStackTrace();
+            return false;
         }
-        catch (SQLException ex){
-            ex.printStackTrace();
-        }
-        return false;
     }
 }

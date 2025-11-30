@@ -1,47 +1,68 @@
 package MEDT.MEDT.modelo;
 
+import jakarta.persistence.*;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
+
+import java.time.Instant;
 import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 
+@Entity
+@Table(name = "pedido", schema = "MEDT_POO_DDBB")
 public class Pedido {
-    private int numPedido;
-    private LocalDateTime fechaHora;
-    private int cantidad;
+    @Id
+    @Column(name = "numeroPedido", nullable = false)
+    private Integer id;
 
-    // Asociación con Articulo
+    @Column(name = "fechaHora", nullable = false)
+    private Instant fechaHora;
+
+    @Column(name = "cantidad", nullable = false)
+    private Integer cantidad;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    @JoinColumn(name = "codigoArticulo")
     private Articulo articulo;
 
-    //Asosiación con Cliente
+    @ManyToOne(fetch = FetchType.LAZY)
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    @JoinColumn(name = "nifCliente")
     private Cliente cliente;
 
-    public Pedido (int numPedido, int cantidad, LocalDateTime fechaHora, Articulo articulo, Cliente cliente){
-        this.numPedido = numPedido;
+    /// Required by JPA
+    public Pedido() {}
+
+    public Pedido(Integer id, Instant fechaHora, Integer cantidad, Articulo articulo, Cliente cliente) {
+        this.id = id;
         this.fechaHora = fechaHora;
         this.cantidad = cantidad;
         this.articulo = articulo;
         this.cliente = cliente;
     }
 
-    public int getNumPedido() {
-        return numPedido;
+    public Integer getId() {
+        return id;
     }
 
-    public void setNumPedido(int numPedido) {
-        this.numPedido = numPedido;
+    public void setId(Integer id) {
+        this.id = id;
     }
 
-    public LocalDateTime getFechaHora() {
+    public Instant getFechaHora() {
         return fechaHora;
     }
 
-    public void setFechaHora(LocalDateTime fechaHora) {
+    public void setFechaHora(Instant fechaHora) {
         this.fechaHora = fechaHora;
     }
 
-    public int getCantidad() {
+    public Integer getCantidad() {
         return cantidad;
     }
 
-    public void setCantidad(int cantidad) {
+    public void setCantidad(Integer cantidad) {
         this.cantidad = cantidad;
     }
 
@@ -53,15 +74,18 @@ public class Pedido {
         this.articulo = articulo;
     }
 
-    public Cliente getCliente() {return cliente;}
+    public Cliente getCliente() {
+        return cliente;
+    }
 
-    public void setCliente(Cliente cliente) {this.cliente = cliente;}
-
+    public void setCliente(Cliente cliente) {
+        this.cliente = cliente;
+    }
 
     // Metodo para calcular el precio total del pedido
     public double calcularPrecioTotal(){
-        double subtotal = cantidad * articulo.getPrecio();
-        double gastos = articulo.getGastosEnvio();
+        double subtotal = cantidad.doubleValue() * articulo.getPrecio().doubleValue();
+        double gastos = articulo.getGastosEnvio().doubleValue();
 
         //Aplicar descuento si cliente Premium
         double descuento = cliente.calcularDescuento();
@@ -73,14 +97,14 @@ public class Pedido {
     // Un pedido no puede cancelarse si ya ha pasado el tiempo de preparación
     public boolean esCancelable() {
         if (articulo == null || fechaHora == null) return false;
-        LocalDateTime limite = fechaHora.plusMinutes(articulo.getTiempoPrep());
+        LocalDateTime limite = LocalDateTime.ofInstant(fechaHora, ZoneOffset.UTC).plusMinutes(articulo.getTiempoPreparacion());
         return LocalDateTime.now().isBefore(limite);
     }
 
     @Override
     public String toString() {
         return "Pedido{" +
-                "numeroPedido='" + numPedido + '\'' +
+                "numeroPedido='" + id + '\'' +
                 ", cantidad='" + cantidad + '\'' +
                 ", cliente='" + cliente + '\'' +
                 ", articulo=" + articulo +

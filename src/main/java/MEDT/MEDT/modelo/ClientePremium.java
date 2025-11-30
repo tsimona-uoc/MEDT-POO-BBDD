@@ -1,8 +1,15 @@
 package MEDT.MEDT.modelo;
 
+import jakarta.persistence.*;
+
+@Entity
+@DiscriminatorValue("premium")
 public class ClientePremium extends Cliente {
     private static final double CUOTA = 30.0;
     private static final double DESCUENTO = 0.2;
+
+    /// Required by JPA
+    public ClientePremium() {}
 
     public ClientePremium(String nombre, String domicilio, String nif, String email) {
         super(nombre, domicilio, nif, email);
