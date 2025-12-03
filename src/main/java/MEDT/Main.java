@@ -14,9 +14,9 @@ public class Main {
     public static void main(String[] args) {
 
         /// Register types
-        MEDTFactory.registerType(IArticuloDAO.class, new ArticuloDAOjdbc());
-        MEDTFactory.registerType(IClienteDAO.class, new ClienteDAOjdbc());
-        MEDTFactory.registerType(IPedidoDAO.class, new PedidoDAOjdbc(MEDTFactory.resolve(IArticuloDAO.class), MEDTFactory.resolve(IClienteDAO.class)));
+        MEDTFactory.registerType(IArticuloDAO.class, new ArticuloDAOJPA());
+        MEDTFactory.registerType(IClienteDAO.class, new ClienteDAOJPA());
+        MEDTFactory.registerType(IPedidoDAO.class, new PedidoDAOJPA());
 
         /// Create controllers
         ControladorArticulos ca = new ControladorArticulos(MEDTFactory.resolve(IArticuloDAO.class));
