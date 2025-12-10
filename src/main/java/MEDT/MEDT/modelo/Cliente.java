@@ -69,6 +69,8 @@ public abstract class Cliente {
         return pedidos;
     }
 
+    public String getTipo() {return tipo; }
+
 
     //Metodo abstracto
     public abstract double calcularDescuento();
@@ -79,7 +81,8 @@ public abstract class Cliente {
                 "nombre='" + nombre + '\'' +
                 ", domicilo='" + domicilio + '\'' +
                 ", nif='" + nif + '\'' +
-                ", email=" + email +
+                ", email=" + email + '\'' +
+                ", tipo='" + tipo + '\'' +
                 '}';
     }
 }

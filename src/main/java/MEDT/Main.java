@@ -7,7 +7,7 @@ import MEDT.MEDT.DAO.ArticuloDAOJPA;
 import MEDT.MEDT.DAO.ClienteDAOJPA;
 import MEDT.MEDT.DAO.PedidoDAOJPA;
 import MEDT.MEDT.Factory.MEDTFactory;
-import MEDT.MEDT.vistaFX.RootLayoutController; // Importar el controlador del RootLayout
+import MEDT.MEDT.vistaFX.RootLayoutController;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
