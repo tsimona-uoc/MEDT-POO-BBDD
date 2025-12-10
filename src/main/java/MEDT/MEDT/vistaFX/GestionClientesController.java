@@ -4,15 +4,20 @@ import MEDT.MEDT.DAO.IClienteDAO;
 import MEDT.MEDT.Factory.MEDTFactory;
 import MEDT.MEDT.controlador.ControladorClientes;
 import MEDT.MEDT.modelo.Cliente;
+import MEDT.Main;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.AnchorPane;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import java.io.IOException;
 
 public class GestionClientesController {
 
@@ -39,14 +44,14 @@ public class GestionClientesController {
     private TableColumn<Cliente, String> emailColumn;
     @FXML
     private TableColumn<Cliente, String> tipoColumn;
-
-    // Nuevo ComboBox para el filtro
     @FXML
     private ComboBox<String> filterComboBox;
 
     // --- Lógica de Negocio ---
     private ControladorClientes controladorClientes;
     private final ObservableList<Cliente> clientesData = FXCollections.observableArrayList();
+
+
 
     @FXML
     private void initialize() {
@@ -159,6 +164,12 @@ public class GestionClientesController {
             showAlert(Alert.AlertType.ERROR, "Campos no válidos", "Por favor, corrige los campos no válidos:", errorMessage);
             return false;
         }
+    }
+
+
+    public void setNifParaNuevoCliente(String nif) {
+        nifField.setText(nif);
+        nombreField.requestFocus();
     }
 
     private void clearFields() {

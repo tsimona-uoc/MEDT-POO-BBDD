@@ -1,30 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.Menu?>
-<?import javafx.scene.control.MenuBar?>
-<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
 <?import javafx.scene.layout.BorderPane?>
 
-<BorderPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="MEDT.MEDT.vistaFX.RootLayoutController">
-   <top>
-      <MenuBar BorderPane.alignment="CENTER">
-        <menus>
-          <Menu mnemonicParsing="false" text="Artículos">
-            <items>
-              <MenuItem mnemonicParsing="false" onAction="#handleGestionArticulos" text="Gestionar" />
-            </items>
-          </Menu>
-          <Menu mnemonicParsing="false" text="Clientes">
-            <items>
-              <MenuItem mnemonicParsing="false" onAction="#handleGestionClientes" text="Gestionar" />
-            </items>
-          </Menu>
-          <Menu mnemonicParsing="false" text="Pedidos">
-            <items>
-              <MenuItem mnemonicParsing="false" onAction="#handleGestionPedidos" text="Gestionar" />
-            </items>
-          </Menu>
-        </menus>
-      </MenuBar>
-   </top>
+<BorderPane prefHeight="500.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="MEDT.MEDT.vistaFX.RootLayoutController">
+  <center>
+    <TabPane tabClosingPolicy="UNAVAILABLE">
+      <tabs>
+        <Tab fx:id="articulosTab" onSelectionChanged="#handleGestionArticulos" text="Gestión de Artículos" />
+        <Tab fx:id="clientesTab" onSelectionChanged="#handleGestionClientes" text="Gestión de Clientes" />
+        <Tab fx:id="pedidosTab" onSelectionChanged="#handleGestionPedidos" text="Gestión de Pedidos" />
+      </tabs>
+    </TabPane>
+  </center>
 </BorderPane>
+    

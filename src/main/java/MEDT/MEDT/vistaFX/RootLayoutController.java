@@ -3,8 +3,9 @@ package MEDT.MEDT.vistaFX;
 import MEDT.Main;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.control.Tab;
+import javafx.scene.control.TabPane;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.BorderPane;
 
 import java.io.IOException;
 
@@ -12,46 +13,79 @@ public class RootLayoutController {
 
     private Main main;
 
+    private GestionClientesController gestionClientesController;
+
     public void setMain(Main main) {
         this.main = main;
     }
 
     @FXML
-    private void handleGestionArticulos() {
-        try {
-            FXMLLoader loader = new FXMLLoader();
-            loader.setLocation(Main.class.getResource("/MEDT/view/GestionArticulos.fxml"));
-            AnchorPane gestionArticulos = (AnchorPane) loader.load();
+    private Tab articulosTab;
+    @FXML
+    private Tab clientesTab;
+    @FXML
+    private Tab pedidosTab;
 
-            ((BorderPane) main.getRootLayout()).setCenter(gestionArticulos);
-        } catch (IOException e) {
-            e.printStackTrace();
+
+    @FXML
+    private void handleGestionArticulos() {
+        if (articulosTab.isSelected() && articulosTab.getContent() == null) {
+            try {
+                FXMLLoader loader = new FXMLLoader();
+                loader.setLocation(Main.class.getResource("/MEDT/view/GestionArticulos.fxml"));
+                AnchorPane gestionArticulos = (AnchorPane) loader.load();
+                articulosTab.setContent(gestionArticulos);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 
+
     @FXML
     private void handleGestionClientes() {
-        try {
-            FXMLLoader loader = new FXMLLoader();
-            loader.setLocation(Main.class.getResource("/MEDT/view/GestionClientes.fxml"));
-            AnchorPane gestionClientes = (AnchorPane) loader.load();
+        if (clientesTab.isSelected() && clientesTab.getContent() == null) {
+            try {
+                FXMLLoader loader = new FXMLLoader();
+                loader.setLocation(Main.class.getResource("/MEDT/view/GestionClientes.fxml"));
+                AnchorPane gestionClientes = (AnchorPane) loader.load();
+                clientesTab.setContent(gestionClientes);
+                this.gestionClientesController = loader.getController();
 
-            ((BorderPane) main.getRootLayout()).setCenter(gestionClientes);
-        } catch (IOException e) {
-            e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 
     @FXML
     private void handleGestionPedidos() {
-        try {
-            FXMLLoader loader = new FXMLLoader();
-            loader.setLocation(Main.class.getResource("/MEDT/view/GestionPedidos.fxml"));
-            AnchorPane gestionPedidos = (AnchorPane) loader.load();
+        if (pedidosTab.isSelected() && pedidosTab.getContent() == null) {
+            try {
+                FXMLLoader loader = new FXMLLoader();
+                loader.setLocation(Main.class.getResource("/MEDT/view/GestionPedidos.fxml"));
+                AnchorPane gestionPedidos = (AnchorPane) loader.load();
 
-            ((BorderPane) main.getRootLayout()).setCenter(gestionPedidos);
-        } catch (IOException e) {
-            e.printStackTrace();
+                pedidosTab.setContent(gestionPedidos);
+                GestionPedidosController controller = loader.getController();
+                controller.setRootLayoutController(this);
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public void switchToClientesTabAndSetNif(String nif) {
+        TabPane tabPane = clientesTab.getTabPane();
+        tabPane.getSelectionModel().select(clientesTab);
+
+        if (clientesTab.getContent() == null) {
+            handleGestionClientes();
+        }
+
+        if (this.gestionClientesController != null) {
+            this.gestionClientesController.setNifParaNuevoCliente(nif);
         }
     }
 }
