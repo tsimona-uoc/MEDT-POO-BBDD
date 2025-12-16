@@ -118,4 +118,13 @@ public class ControladorPedidos {
         }
         return false;
     }
+    public List<Pedido> getTodosLosPedidos() {
+        try {
+            // Convertimos la Collection a List para JavaFX
+            return this.pedidoDAO.findAll().stream().toList();
+        } catch (SQLException ex) {
+            System.out.println("Error al obtener todos los pedidos: " + ex.getMessage());
+        }
+        return null;
+    }
 }
