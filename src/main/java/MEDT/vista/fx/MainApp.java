@@ -29,18 +29,22 @@ public class MainApp extends Application {
                 MEDTFactory.resolve(IClienteDAO.class)
                 );
 
+        //Menu principal
+        MenuPrincipalView menu = new MenuPrincipalView(stage, ca, cc, cp);
 
-        MenuPrincipalView menu = new MenuPrincipalView();
-
-        //Eventos
         menu.getBtnArticulos().setOnAction(e -> {
-            System.out.println("Abrir gestión de artículos");
+            ArticulosView view = new ArticulosView(stage, ca, menu);
+            stage.setScene(view.getScene());
         });
-        menu.getBtnClientes().setOnAction(e ->{
-            System.out.println("Abrir gestión de clientes");
+
+        menu.getBtnClientes().setOnAction(e -> {
+            ClientesView view = new ClientesView(stage, cc, menu);
+            stage.setScene(view.getScene());
         });
-        menu.getBtnPedidos().setOnAction(e ->{
-            System.out.println("Abrir gestión de pedidos");
+
+        menu.getBtnPedidos().setOnAction(e -> {
+            PedidosView view = new PedidosView(stage, cp, cc, menu);
+            stage.setScene(view.getScene());
         });
 
         stage.setTitle("MEDT - Gestión");
