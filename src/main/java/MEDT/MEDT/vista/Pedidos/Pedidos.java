@@ -7,6 +7,7 @@ import MEDT.MEDT.modelo.ClienteEstandar;
 import MEDT.MEDT.modelo.ClientePremium;
 import MEDT.MEDT.modelo.Pedido;
 import MEDT.MEDT.modelo.excepciones.PedidoNoCancelableException;
+import MEDT.MEDT.vista.App;
 import MEDT.MEDT.vista.Cliente.Modals.FilterClients;
 import MEDT.MEDT.vista.Cliente.Operaciones.EditarCliente;
 import MEDT.MEDT.vista.Eventos.TabCloseEvent;
@@ -18,13 +19,16 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Cursor;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseButton;
+import javafx.scene.input.MouseEvent;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.util.Callback;
 
 import java.io.IOException;
 import java.time.format.DateTimeFormatter;
@@ -34,8 +38,14 @@ import java.util.stream.Stream;
 
 public class Pedidos {
 
-    /// Componentes
+    /// Parent reference
+    private App parent;
 
+    public void setParent(App parent){
+        this.parent = parent;
+    }
+
+    /// Componentes
     @FXML
     private Label filterLabel;
 
@@ -93,6 +103,63 @@ public class Pedidos {
             Pedido pedido = cellData.getValue();
             return new SimpleStringProperty(pedido.getArticulo().getCodigo());
         });
+
+        /// Highlight del texto del articulo y navegación
+        colArticulo.setCellFactory(new Callback<>() {
+            @Override
+            public TableCell<Pedido, String> call(TableColumn<Pedido, String> param) {
+
+                final TableCell<Pedido, String> cell = new TableCell<Pedido, String>() {
+                    @Override
+                    protected void updateItem(String item, boolean empty) {
+                        super.updateItem(item, empty);
+                        if (empty || item == null) {
+                            setText(null);
+                            setGraphic(null);
+                            getStyleClass().remove("link-style");
+                        } else {
+                            setText(item);
+                        }
+                    }
+                };
+
+                // --- MANEJO DE EVENTOS ---
+
+                // Evento MOUSE_ENTERED: Cambia el cursor y añade el estilo
+                cell.addEventHandler(MouseEvent.MOUSE_ENTERED, (MouseEvent event) -> {
+                    if (!cell.isEmpty()) {
+                        cell.getScene().setCursor(Cursor.HAND);
+                        cell.getStyleClass().add("link-style");
+                    }
+                });
+
+                // Evento MOUSE_EXITED: Restaura el cursor y quita el estilo
+                cell.addEventHandler(MouseEvent.MOUSE_EXITED, (MouseEvent event) -> {
+                    if (!cell.isEmpty()) {
+                        cell.getScene().setCursor(Cursor.DEFAULT);
+                        cell.getStyleClass().remove("link-style");
+                    }
+                });
+
+                // Evento MOUSE_CLICKED: La acción real del "enlace"
+                cell.addEventHandler(MouseEvent.MOUSE_CLICKED, (MouseEvent event) -> {
+
+                    if (event.getClickCount() == 2 || event.isControlDown() ) {
+                        if (!cell.isEmpty()) {
+                            // Obtener el objeto Pedido de esta fila
+                            Pedido pedidoActual = cell.getTableView().getItems().get(cell.getIndex());
+
+                            /// Abrir tab de articulos y abrir un nuevo subtab con los datos del articulo
+                            parent.OpenArticulosTab();
+                            parent.getArticuloController().openArticleTab(pedidoActual.getArticulo().getCodigo());
+                        }
+                    }
+                });
+
+                return cell;
+            }
+        });
+
         colCantidad.setCellValueFactory(new PropertyValueFactory<>("cantidad"));
         colFechaHora.setCellValueFactory(cellData -> {
             Pedido pedido = cellData.getValue();
@@ -102,6 +169,62 @@ public class Pedidos {
         colNIFCliente.setCellValueFactory(cellData -> {
             Pedido pedido = cellData.getValue();
             return new SimpleStringProperty(pedido.getCliente().getNif());
+        });
+
+        /// Highlight del texto del articulo
+        colNIFCliente.setCellFactory(new Callback<>() {
+            @Override
+            public TableCell<Pedido, String> call(TableColumn<Pedido, String> param) {
+
+                final TableCell<Pedido, String> cell = new TableCell<>() {
+                    @Override
+                    protected void updateItem(String item, boolean empty) {
+                        super.updateItem(item, empty);
+                        if (empty || item == null) {
+                            setText(null);
+                            setGraphic(null);
+                            // Asegúrate de que los estilos se limpian en celdas vacías
+                            getStyleClass().remove("link-style");
+                        } else {
+                            setText(item);
+                        }
+                    }
+                };
+
+                // --- MANEJO DE EVENTOS ---
+
+                // Evento MOUSE_ENTERED: Cambia el cursor y añade el estilo
+                cell.addEventHandler(MouseEvent.MOUSE_ENTERED, (MouseEvent event) -> {
+                    if (!cell.isEmpty()) {
+                        cell.getScene().setCursor(Cursor.HAND);
+                        cell.getStyleClass().add("link-style");
+                    }
+                });
+
+                // Evento MOUSE_EXITED: Restaura el cursor y quita el estilo
+                cell.addEventHandler(MouseEvent.MOUSE_EXITED, (MouseEvent event) -> {
+                    if (!cell.isEmpty()) {
+                        cell.getScene().setCursor(Cursor.DEFAULT);
+                        cell.getStyleClass().remove("link-style");
+                    }
+                });
+
+                cell.addEventHandler(MouseEvent.MOUSE_CLICKED, (MouseEvent event) -> {
+
+                    if (event.getClickCount() == 2 || event.isControlDown() ) {
+                        if (!cell.isEmpty()) {
+                            // Obtener el objeto Pedido de esta fila
+                            Pedido pedidoActual = cell.getTableView().getItems().get(cell.getIndex());
+
+                            /// Abrir tab de clientes y abrir un nuevo subtab con los datos del cliente
+                            parent.OpenClientesTab();
+                            parent.getClienteController().openClientTab(pedidoActual.getCliente().getNif());
+                        }
+                    }
+                });
+
+                return cell;
+            }
         });
 
         /// Bind enable state of the "delete" button to be only active is selection is not empty
@@ -120,16 +243,7 @@ public class Pedidos {
             this.OnCargarPedidos();
         });
 
-        /// Handle double click on article entry
-        this.tablaPedidos.setOnMouseClicked(event -> {
-            if (event.getClickCount() == 2 && event.getButton() == MouseButton.PRIMARY  && !this.tablaPedidos.getSelectionModel().isEmpty()) {
-                Pedido pedido = this.tablaPedidos.getSelectionModel().getSelectedItem();
-                this.openPedidoTab(pedido.getNumPedido());
-            }
-        });
-
         this.filterData = new SimpleObjectProperty<>();
-
         this.filterLabel.textProperty().bind(
                 Bindings.when(this.filterData.isNull())
                         .then("")
@@ -227,43 +341,6 @@ public class Pedidos {
         this.OnCargarPedidos();
     }
 
-    private void openPedidoTab(int numeroPedido){
-
-        /*
-        try {
-            Pedido pedido = this.controladorPedidos.getPedido(numeroPedido);
-
-            if (pedido == null){
-                /// TODO: Mostrar mensaje de error
-                return;
-            }
-
-            /// Create a new tab
-            Tab editarPedidoTab = new Tab("Editar pedido " + pedido.getNumPedido() + " - " +  pedido.getArticulo().getCodigo());
-            editarPedidoTab.setClosable(true);
-
-            /// Load the add item content fxml and sets as content
-            FXMLLoader editarPedidoContent = new FXMLLoader(getClass().getResource("/views/Pedidos/Operaciones/EditarPedido.fxml"));
-            editarPedidoTab.setContent(editarPedidoContent.load()); // inyecta el contenido en la pestaña
-
-            /// Get controller
-            /// TODO: Create EditarPedido controller
-            /// EditarPedido controller = editarPedidoContent.getController();
-
-            /// Set visualization data
-            /// controller.setData(cliente);
-
-            /// Add the last tab
-            TODO: Open edit Pedido tab
-            operacionesClientes.getTabs().add(editarClienteTab);
-            operacionesClientes.getSelectionModel().select(editarClienteTab);
-
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-        */
-    }
-
     public void OnFiltrarPedidos(){
         try {
             // 1. Cargar el FXML
@@ -301,7 +378,19 @@ public class Pedidos {
 
     private List<Pedido> aplicarFiltros(List<Pedido> pedidos, FilterPedidos.Data filters){
         Stream<Pedido> stream = pedidos.stream();
-        /// TODO: Apply filters
+
+        if (filters.articulo != null){
+            stream = stream.filter(p -> p.getArticulo().getCodigo().equals(filters.articulo.getCodigo()));
+        }
+
+        if (filters.cliente != null){
+            stream = stream.filter(p -> p.getCliente().getNif().equals(filters.cliente.getNif()));
+        }
+
+        if (filters.pedidoCancelable.isPresent()){
+            stream = stream.filter(p -> p.esCancelable() == filters.pedidoCancelable.get().booleanValue());
+        }
+
         return stream.toList();
     }
 }

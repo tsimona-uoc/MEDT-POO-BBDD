@@ -1,0 +1,11 @@
+/* Estilo de enlace: se aplica cuando la celda tiene la clase 'link-style' */
+.table-cell.link-style {
+    -fx-text-fill: #0066cc;
+    -fx-font-weight: bold;
+    -fx-underline: true;
+}
+
+/* Estilo por defecto para que el texto sea negro y el enlace destaque */
+.table-cell {
+    -fx-text-fill: black;
+}

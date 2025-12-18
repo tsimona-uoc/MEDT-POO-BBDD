@@ -7,7 +7,7 @@
 
 <AnchorPane prefHeight="531.0" prefWidth="816.0" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="MEDT.MEDT.vista.App">
     <children>
-        <TabPane layoutX="7.0" prefHeight="358.0" prefWidth="544.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+        <TabPane fx:id="tabsContainer" layoutX="7.0" prefHeight="358.0" prefWidth="544.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
             <tabs>
                 <Tab fx:id="articulosTab" text="Articulos" />
                 <Tab fx:id="clientesTab" text="Clientes" />

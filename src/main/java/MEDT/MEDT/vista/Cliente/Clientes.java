@@ -203,7 +203,7 @@ public class Clientes {
         this.OnCargarClientes();
     }
 
-    private void openClientTab(String nif){
+    public void openClientTab(String nif){
         try {
             Cliente cliente = this.controladorClientes.getCliente(nif);
 

@@ -79,7 +79,6 @@ public class AgregarPedido {
                 if (articulo == null) {
                     return null;
                 }
-                // Aquí defines la concatenación deseada
                 return articulo.getCodigo() + " - " + articulo.getDescripcion();
             }
 
@@ -127,7 +126,6 @@ public class AgregarPedido {
                 if (cliente == null) {
                     return "";
                 }
-                // Aquí defines la concatenación deseada
                 return cliente.getNif() + " - " + cliente.getNombre();
             }
 

@@ -3,6 +3,7 @@ package MEDT.MEDT.vista.Articulo;
 import MEDT.MEDT.Factory.MEDTFactory;
 import MEDT.MEDT.controlador.IControladorArticulos;
 import MEDT.MEDT.modelo.Articulo;
+import MEDT.MEDT.vista.App;
 import MEDT.MEDT.vista.Articulo.Operaciones.EditarArticulo;
 import MEDT.MEDT.vista.Eventos.TabCloseEvent;
 import javafx.collections.ObservableList;
@@ -149,7 +150,7 @@ public class Articulos {
         this.OnCargarArticulos();
     }
 
-    private void openArticleTab(String codigoArticulo){
+    public void openArticleTab(String codigoArticulo){
         try {
             Articulo articulo = this.controladorArticulos.getArticulo(codigoArticulo);
 
