@@ -1,11 +1,22 @@
 package MEDT.MEDT.modelo;
 
+import jakarta.persistence.*;
+
+@Entity
+@Table(name = "articulo")
 public class Articulo {
+
+    @Id
     private String codigo;
     private String descripcion;
     private double precio;
     private double gastosEnvio;
+
+    @Column(name = "tiempoPreparacion")
     private int tiempoPrep;
+
+    public Articulo() {
+    }
 
     public Articulo(String codigo, String descripcion, double precio, double gastosEnvio, int tiempoPrep){
         this.codigo = codigo;
@@ -61,8 +72,8 @@ public class Articulo {
         return "Articulo{" +
                 "código='" + codigo + '\'' +
                 ", descripción='" + descripcion + '\'' +
-                ", precio='" + precio + '\'' +
-                ", gastos de envío=" + gastosEnvio + '\'' +
+                ", precio=" + String.format("%.2f", precio) +
+                ", gastos de envío=" + String.format("%.2f", gastosEnvio) +
                 ", tiempo de preparación=" + tiempoPrep +
                 '}';
     }

@@ -5,20 +5,28 @@ import MEDT.MEDT.modelo.Pedido;
 import MEDT.MEDT.modelo.excepciones.TipoClienteInvalidoException;
 
 import java.sql.SQLException;
+import java.time.LocalDateTime;
 import java.util.Collection;
+import java.util.List;
 
 public interface IPedidoDAO {
 
     /// Insert a new order
-    public void insert(Pedido pedido) throws SQLException;
+    void insert(Pedido pedido) throws SQLException;
     /// Update a given order
-    public void update(Pedido pedido) throws SQLException;
+    void update(Pedido pedido) throws SQLException;
     /// Delete a given order by code
-    public void delete(int code) throws SQLException;
+    void delete(int code) throws SQLException;
     /// Find an order by code
-    public Pedido findByCode(int code) throws SQLException;
+    Pedido findByCode(int code) throws SQLException;
     /// Returns a list of all orders
-    public Collection<Pedido> findAll() throws SQLException;
+    Collection<Pedido> findAll() throws SQLException;
     /// Returns a list of all orders by client
-    public Collection<Pedido> findByCliente(Cliente cliente) throws SQLException;
+    Collection<Pedido> findByCliente(Cliente cliente) throws SQLException;
+    /// Returns a list of pedidos enviados
+    List<Pedido> findPedidosEnviados(String nif) throws SQLException;
+    /// Returns a list of pedidos pendientes
+    List<Pedido> findPedidosPendientes(String nif) throws SQLException;
+    /// Add pedido y cliente atomico
+    boolean addPedidoYClienteAtomico(Pedido pedido, Cliente cliente) throws SQLException;
 }

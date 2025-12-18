@@ -3,9 +3,7 @@ package MEDT.MEDT.controlador;
 import MEDT.MEDT.DAO.IArticuloDAO;
 import MEDT.MEDT.DAO.IClienteDAO;
 import MEDT.MEDT.DAO.IPedidoDAO;
-import MEDT.MEDT.modelo.Articulo;
-import MEDT.MEDT.modelo.Cliente;
-import MEDT.MEDT.modelo.Pedido;
+import MEDT.MEDT.modelo.*;
 import MEDT.MEDT.modelo.excepciones.PedidoNoCancelableException;
 
 import java.sql.SQLException;
@@ -81,72 +79,43 @@ public class ControladorPedidos {
 
 
     public List<Pedido> getPedidosPendientes(String nif) {
-        /// If no NIF is given, return all pending orders
-        if (Objects.equals(nif, "")){
-            try {
-                return this.pedidoDAO.findAll()
-                        .stream()
-                        .filter(p -> Duration.between(p.getFechaHora(), LocalDateTime.now()).toMinutes() <= p.getArticulo().getTiempoPrep())
-                        .toList();
-            } catch (SQLException e) {
-                return null;
-            }
-        }
-
-        Cliente cliente = null;
-
         try {
-            cliente = this.clienteDAO.findByNIF(nif);
-        } catch (Exception e) {
-            return null;
+            return this.pedidoDAO.findPedidosPendientes(nif);
         }
-
-        if (cliente == null){
-            throw new RuntimeException("Cliente no encontrado");
+        catch (SQLException ex){
+            ex.printStackTrace();
         }
-
-        try {
-            return this.pedidoDAO.findByCliente(cliente)
-                    .stream()
-                    .filter(p -> Duration.between(p.getFechaHora(), LocalDateTime.now()).toMinutes() <= p.getArticulo().getTiempoPrep())
-                    .toList();
-        } catch (SQLException e) {
-            return null;
-        }
+        return null;
     }
 
     public List<Pedido> getPedidosEnviados(String nif) {
-        /// If no NIF is given, return all pending orders
-        if (Objects.equals(nif, "")){
-            try {
-                return this.pedidoDAO.findAll()
-                        .stream()
-                        .filter(p -> Duration.between(p.getFechaHora(), LocalDateTime.now()).toMinutes() > p.getArticulo().getTiempoPrep())
-                        .toList();
-            } catch (SQLException e) {
-                return null;
+        try {
+            return this.pedidoDAO.findPedidosEnviados(nif);
+        }
+        catch (SQLException ex){
+            ex.printStackTrace();
+        }
+        return null;
+    }
+
+    public boolean addPedidoYClienteAtomico(int numeroPedido, int cantidad, LocalDateTime fechaHora, String codigoArticulo, String nif, String nombre, String domicilio, String email, int tipo) {
+        try {
+            Articulo articulo = this.articuloDAO.findByCodigo(codigoArticulo);
+            Cliente cliente = null;
+
+            if (tipo == 1){
+                cliente = new ClienteEstandar(nombre, domicilio, nif, email);
             }
-        }
+            else{
+                cliente = new ClientePremium(nombre, domicilio, nif, email);
+            }
 
-        Cliente cliente = null;
-
-        try {
-            cliente = this.clienteDAO.findByNIF(nif);
-        } catch (Exception e) {
-            return null;
+            Pedido pedido = new Pedido(numeroPedido, cantidad, fechaHora, articulo, cliente);
+            return this.pedidoDAO.addPedidoYClienteAtomico(pedido, cliente);
         }
-
-        if (cliente == null){
-            throw new RuntimeException("Cliente no encontrado");
+        catch (SQLException ex){
+            ex.printStackTrace();
         }
-
-        try {
-            return this.pedidoDAO.findByCliente(cliente)
-                    .stream()
-                    .filter(p -> Duration.between(p.getFechaHora(), LocalDateTime.now()).toMinutes() > p.getArticulo().getTiempoPrep())
-                    .toList();
-        } catch (SQLException e) {
-            return null;
-        }
+        return false;
     }
 }
