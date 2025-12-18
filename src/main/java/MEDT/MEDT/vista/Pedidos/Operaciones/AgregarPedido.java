@@ -132,22 +132,11 @@ public class AgregarPedido {
             @Override
             public Cliente fromString(String newValue) {
 
-                if (newValue == null || newValue.trim().isEmpty()) {
+                if (newValue == null || newValue.trim().isEmpty() || newValue.length() < 9) {
                     return null;
                 }
 
-                final String NIF_CIF_REGEX_ESTRUCTURA = "^(\\d{8}[A-Z])(\\s*-\\s*.*)?$";
                 final String busqueda = newValue.toUpperCase();
-
-                if (!busqueda.matches(NIF_CIF_REGEX_ESTRUCTURA)) {
-                    Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                    alert.setHeaderText(null);
-                    alert.setTitle("Valor invalido");
-                    alert.setContentText("El criterio de busqueda debe contener al menos un NIF/CIF.");
-                    alert.showAndWait();
-                    clienteComboBox.getEditor().setText("");
-                    return null;
-                }
 
                 String nif = busqueda.substring(0, 9);
                 Cliente cliente = controladorClientes.getCliente(nif);
