@@ -2,10 +2,7 @@ package MEDT;
 
 import MEDT.MEDT.DAO.*;
 import MEDT.MEDT.Factory.MEDTFactory;
-import MEDT.MEDT.controlador.ControladorArticulos;
-import MEDT.MEDT.controlador.ControladorClientes;
-import MEDT.MEDT.controlador.IControladorArticulos;
-import MEDT.MEDT.controlador.IControladorClientes;
+import MEDT.MEDT.controlador.*;
 import MEDT.MEDT.vista.App;
 import javafx.application.Application;
 
@@ -18,6 +15,7 @@ public class Launcher {
 
         MEDTFactory.registerType(IControladorArticulos.class, new ControladorArticulos(MEDTFactory.resolve(IArticuloDAO.class)));
         MEDTFactory.registerType(IControladorClientes.class, new ControladorClientes(MEDTFactory.resolve(IClienteDAO.class)));
+        MEDTFactory.registerType(IControladorPedidos.class, new ControladorPedidos(MEDTFactory.resolve(IArticuloDAO.class), MEDTFactory.resolve(IPedidoDAO.class), MEDTFactory.resolve(IClienteDAO.class)));
 
         Application.launch(App.class, args);
     }

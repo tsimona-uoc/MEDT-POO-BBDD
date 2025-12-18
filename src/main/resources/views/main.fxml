@@ -11,6 +11,7 @@
             <tabs>
                 <Tab fx:id="articulosTab" text="Articulos" />
                 <Tab fx:id="clientesTab" text="Clientes" />
+                <Tab fx:id="pedidosTab" text="Pedidos" />
             </tabs>
         </TabPane>
     </children>

@@ -18,6 +18,9 @@ public class App extends javafx.application.Application {
     Tab clientesTab;
 
     @FXML
+    Tab pedidosTab;
+
+    @FXML
     private void initialize() {
         try {
             // Cargar FXML de Tab Articulos
@@ -27,6 +30,10 @@ public class App extends javafx.application.Application {
             // Cargar FXML de Tab Clientes
             FXMLLoader clientesTabLoader = new FXMLLoader(getClass().getResource("/views/Clientes/Clientes.fxml"));
             clientesTab.setContent(clientesTabLoader.load()); // inyecta el contenido en la pestaña
+
+            // Cargar FXML de Tab Pedidos
+            FXMLLoader pedidosTabLoader = new FXMLLoader(getClass().getResource("/views/Pedidos/Pedidos.fxml"));
+            pedidosTab.setContent(pedidosTabLoader.load()); // inyecta el contenido en la pestaña
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

@@ -22,6 +22,20 @@ public class PedidoDAOJPA implements IPedidoDAO{
         EntityManager em = emf.createEntityManager();
         em.getTransaction().begin();
         try {
+
+            /// Generar un identificador
+            if (pedido.getNumPedido() == 0){
+                Integer maxId = em.createQuery("SELECT MAX(e.numPedido) FROM Pedido e", Integer.class).getSingleResult();
+
+                // Si maxId es nulo (tabla vacía), empezamos por 1.
+                if (maxId == null) {
+                    pedido.setNumPedido(1);
+                }
+                else {
+                    pedido.setNumPedido(maxId + 1);
+                }
+            }
+
             em.persist(pedido);
             em.getTransaction().commit();
         } catch (Exception e) {

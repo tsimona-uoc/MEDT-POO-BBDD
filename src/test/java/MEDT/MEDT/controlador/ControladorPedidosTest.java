@@ -83,10 +83,10 @@ class ControladorPedidosTest {
         doNothing().when(pedidoDAO).insert(any(Pedido.class));
 
         // Ejecutar el método
-        String resultado = controlador.addPedido(3, 5, ahora, articuloValido.getCodigo(), clienteValido.getNif());
+        int resultado = controlador.addPedido(3, 5, ahora, articuloValido.getCodigo(), clienteValido.getNif());
 
         // Verificar el resultado y el comportamiento del Mock
-        assertEquals("Pedido añadido correctamente.", resultado);
+        assertEquals(0, resultado);
         // Verificar que el método insert fue llamado exactamente una vez
         verify(pedidoDAO, times(1)).insert(any(Pedido.class));
     }
@@ -99,10 +99,10 @@ class ControladorPedidosTest {
         when(clienteDAO.findByNIF(clienteValido.getNif())).thenReturn(clienteValido);
 
         // Ejecutar el método
-        String resultado = controlador.addPedido(3, 5, ahora, "A999", clienteValido.getNif());
+        int resultado = controlador.addPedido(3, 5, ahora, "A999", clienteValido.getNif());
 
         // Verificar el resultado
-        assertEquals("Error: el artículo no existe.", resultado);
+        assertEquals(1, resultado);
         // Verificar que NUNCA se intentó insertar el pedido
         verify(pedidoDAO, never()).insert(any(Pedido.class));
     }
@@ -115,10 +115,10 @@ class ControladorPedidosTest {
         when(clienteDAO.findByNIF(anyString())).thenReturn(null);
 
         // Ejecutar el método
-        String resultado = controlador.addPedido(3, 5, ahora, articuloValido.getCodigo(), "NIF999");
+        int resultado = controlador.addPedido(3, 5, ahora, articuloValido.getCodigo(), "NIF999");
 
         // Verificar el resultado
-        assertEquals("Error: el cliente no existe. Debe crearlo antes de continuar.", resultado);
+        assertEquals(2, resultado);
         // Verificar que NUNCA se intentó insertar el pedido
         verify(pedidoDAO, never()).insert(any(Pedido.class));
     }
@@ -134,10 +134,10 @@ class ControladorPedidosTest {
         doThrow(new SQLException("Duplicado de pedido")).when(pedidoDAO).insert(any(Pedido.class));
 
         // Ejecutar el método
-        String resultado = controlador.addPedido(3, 5, ahora, articuloValido.getCodigo(), clienteValido.getNif());
+        int resultado = controlador.addPedido(3, 5, ahora, articuloValido.getCodigo(), clienteValido.getNif());
 
         // Verificar el resultado
-        assertEquals("Error: el pedido no se pudo añadir (posible duplicado).", resultado);
+        assertEquals(3, resultado);
     }
 
     // ====================================================================
@@ -154,7 +154,7 @@ class ControladorPedidosTest {
         doNothing().when(pedidoDAO).delete(1);
 
         // Ejecutar y verificar
-        assertTrue(controlador.eliminarPedido(1));
+        assertEquals(0, controlador.eliminarPedido(1));
 
         // Verificar que el método delete fue llamado
         verify(pedidoDAO, times(1)).delete(1);
@@ -202,7 +202,7 @@ class ControladorPedidosTest {
         doThrow(new SQLException("Error de DB al borrar")).when(pedidoDAO).delete(1);
 
         // Ejecutar y verificar
-        assertFalse(controlador.eliminarPedido(1));
+        assertEquals(9000, controlador.eliminarPedido(1));
     }
 
 

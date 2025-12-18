@@ -3,6 +3,8 @@ package MEDT.MEDT.vista.Cliente.Operaciones;
 import MEDT.MEDT.Factory.MEDTFactory;
 import MEDT.MEDT.controlador.IControladorArticulos;
 import MEDT.MEDT.controlador.IControladorClientes;
+import MEDT.MEDT.modelo.Cliente;
+import MEDT.MEDT.vista.Eventos.OperationCompletedEvent;
 import MEDT.MEDT.vista.Eventos.TabCloseEvent;
 import MEDT.MEDT.vista.TextFormatters.DecimalFormatter;
 import MEDT.MEDT.vista.TextFormatters.IntegerFormatter;
@@ -26,7 +28,7 @@ public class AgregarCliente {
     private AnchorPane root;
 
     @FXML
-    private TextField tfNif;
+    public TextField tfNif;
 
     @FXML
     private TextField tfNombre;
@@ -42,6 +44,9 @@ public class AgregarCliente {
 
     @FXML
     private Button btnAceptar;
+
+    /// Operation completed
+    private boolean operacionCompletada = false;
 
     @FXML
     private void initialize(){
@@ -82,6 +87,8 @@ public class AgregarCliente {
             alert.setTitle("Operación completada");
             alert.setContentText("Se ha agregado el cliente correctamente.");
             alert.showAndWait();
+            this.operacionCompletada = true;
+            root.fireEvent(new OperationCompletedEvent());
             root.fireEvent(new TabCloseEvent());
         }
         else{
@@ -90,11 +97,17 @@ public class AgregarCliente {
             alert.setTitle("Error al agregar cliente");
             alert.setContentText("No se ha podido agregar el cliente.");
             alert.showAndWait();
+            this.operacionCompletada = false;
+            root.fireEvent(new OperationCompletedEvent());
         }
     }
 
     @FXML
     private void OnCancelar(){
         root.fireEvent(new TabCloseEvent());
+    }
+
+    public boolean isOperacionCompletada() {
+        return operacionCompletada;
     }
 }

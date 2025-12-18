@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 
-public class ControladorPedidos {
+public class ControladorPedidos implements IControladorPedidos {
 
     /// Articulo DAO
     private IArticuloDAO articuloDAO;
@@ -29,54 +29,73 @@ public class ControladorPedidos {
         this.clienteDAO = clienteDAO;
     }
 
-    public String addPedido(int numPedido, int cantidad, LocalDateTime fechaHora, String codigoArticulo, String nifCliente) {
+    public int addPedido(int numPedido, int cantidad, LocalDateTime fechaHora, String codigoArticulo, String nifCliente) {
         try {
             Articulo articulo = this.articuloDAO.findByCodigo(codigoArticulo);
             Cliente cliente = this.clienteDAO.findByNIF(nifCliente);
 
             if (articulo == null)
-                return "Error: el artículo no existe.";
+                return 1;
             if (cliente == null)
-                return "Error: el cliente no existe. Debe crearlo antes de continuar.";
+                return 2;
 
             Pedido pedido = new Pedido(numPedido, cantidad, fechaHora, articulo, cliente);
 
             try {
                 this.pedidoDAO.insert(pedido);
-                return "Pedido añadido correctamente.";
+                return 0;
             }
             catch (SQLException ex){
-                return "Error: el pedido no se pudo añadir (posible duplicado).";
+                return 3;
             }
         } catch (Exception e) {
-            return "Error inesperado al añadir pedido: " + e.getMessage();
+            return 9000;
         }
     }
 
-    public boolean eliminarPedido(int numPedido) throws PedidoNoCancelableException {
+    public int eliminarPedido(int numPedido) throws PedidoNoCancelableException {
 
         try {
             Pedido pedido = this.pedidoDAO.findByCode(numPedido);
             if (pedido == null){
-                throw new IllegalArgumentException("No existe ningún pedido con ese número.");
+                return 1;
             }
 
             if (!pedido.esCancelable()){
-                throw new PedidoNoCancelableException("No se puede eliminar el pedido.");
+                return 2;
             }
 
             this.pedidoDAO.delete(numPedido);
 
-            return true;
-
+            return 0;
         }
         catch (SQLException ex){
             System.out.println("Error al eliminar el pedido: " + ex.getMessage());
         }
 
-        return false;
+        return 9000;
     }
 
+    /// Get pedido by numPedido
+    public Pedido getPedido(int numPedido){
+        try {
+            return this.pedidoDAO.findByCode(numPedido);
+        }
+        catch (SQLException ex){
+            ex.printStackTrace();
+        }
+        return null;
+    }
+
+    public List<Pedido> getPedidos() {
+        try {
+            return this.pedidoDAO.findAll().stream().toList();
+        }
+        catch (SQLException ex){
+            ex.printStackTrace();
+        }
+        return null;
+    }
 
     public List<Pedido> getPedidosPendientes(String nif) {
         try {
