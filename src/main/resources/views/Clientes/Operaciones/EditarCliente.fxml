@@ -70,7 +70,7 @@
                                         <Font size="14.0" />
                                     </font>
                                 </Label>
-                                <ChoiceBox fx:id="tipoCliente" maxWidth="1.7976931348623157E308" prefWidth="150.0" />
+                                <ChoiceBox fx:id="tipoCliente" disable="true" maxWidth="1.7976931348623157E308" prefWidth="150.0" />
                             </children>
                             <padding>
                                 <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />

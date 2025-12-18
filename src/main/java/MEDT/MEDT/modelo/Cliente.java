@@ -14,6 +14,7 @@ public abstract class Cliente {
     @Id
     private String nif;
     private String email;
+
     @Column(name = "tipo", insertable = false, updatable = false)
     private String tipo;
 
